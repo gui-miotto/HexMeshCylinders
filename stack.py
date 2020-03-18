@@ -15,14 +15,15 @@ class Stack():
 
         self.max_diam = max([c.diam for c in self.cylinders])
 
-        self._print("Deactivating cells outside the volume")
+        self._print("Generating list of active cells")
         self.isin = self._who_is_in()
         self._print("Generating wireframe")
         self.vertex = self._build_vertex()
         self._print("Generating list of active points")
         self.pointlist = PointList(self.isin, self.vertex)
-        self._print("Generating list of active cells")
+        self._print("Indexing active cells")
         self.celllist = CellList(self.isin, self.pointlist)
+        self._print("Number of active cells " + str(len(self.celllist)) + " of " + str(self.isin.flatten().shape[0]))
         self._print("Generating list of faces")
         self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.cylinders, verbose)
 

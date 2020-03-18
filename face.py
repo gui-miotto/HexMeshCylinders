@@ -1,6 +1,6 @@
 from itertools import product
 from collections import namedtuple
-import multiprocessing
+import multiprocessing, time
 import numpy as np
 
 from printer import Printer
@@ -98,27 +98,35 @@ class FaceList():
         # Does the same job as _get_internal_faces_serially() but with multiprocessing
         n_cpus = multiprocessing.cpu_count()
         nx, ny, nz = self.isin.shape
-        index = list(product(range(nx), range(ny), range(nz)))
+        index = np.array(list(product(range(nx), range(ny), range(nz))))
+        np.random.shuffle(index)
+        index = np.ascontiguousarray(index)  # Is this doing any good?
         index = np.array_split(index, n_cpus)
 
+        # Start processes
         procs, queues = [], []
         for n_p in range(n_cpus):
             q = multiprocessing.Queue()
-            p = multiprocessing.Process(target=self._get_internal_faces, args=(q, index[n_p]))
+            p = multiprocessing.Process(target=self._get_internal_faces, args=(q, index[n_p], n_p))
             p.start()
             procs.append(p)
             queues.append(q)
 
+        # Join processes
         for n_p in range(n_cpus):
             proc_faces = queues[n_p].get()
             self._facelist.extend(proc_faces)
             procs[n_p].join()
 
-    def _get_internal_faces(self, queue, index):
+    def _get_internal_faces(self, queue, index, proc_num):
         # This function should be called only via _get_internal_faces_in_parallel()
         # TODO: move this function definition inside _get_internal_faces_in_parallel()
+        self._print(f'Process {proc_num} has been started')
         all_faces = []
-        for i, j, k in index:
+        for n, (i, j, k) in enumerate(index):
+            if (n+1) % 200 == 0:
+                prog = n / len(index) * 100
+                self._print(f'Process {proc_num} reached cell {n+1} of {len(index)} ({prog:.2f}%)')
             if self.isin[i, j, k]:
                 cell_add = (i, j, k)
                 all_faces.append(self.celllist.get_cell_face(cell_add, 'up'))
@@ -127,6 +135,7 @@ class FaceList():
 
         internal_faces = [face for face in all_faces if face.neighbour is not None]
         queue.put(internal_faces)
+        self._print('Process ' + str(proc_num) + ' is done')
 
     def _get_internal_faces_serially(self):
         # Does the same job as _get_internal_faces_in_parallel() but using a single process
@@ -144,12 +153,14 @@ class FaceList():
 
     def _get_boundary_faces(self):
         # bottom most boundary
+        self._print("Generating bottom most boundary")
         self._get_boundary_horizontal(0, 'down')
 
         # intermediate boundaries
         n_cyls = len(self.cylinders)
         l0 = 0
         for cyl in range(n_cyls):
+            self._print(f"Generating boundaries for cylinder {cyl+1} of {n_cyls}")
             l1 = l0 + self.cylinders[cyl].n_layers
             layers = list(range(l0, l1))
             self._get_boundary_vertical(layers)
@@ -162,6 +173,7 @@ class FaceList():
                     self._get_boundary_horizontal(l1, 'down')
 
         # top most boundary
+        self._print("Generating top most boundary")
         self._get_boundary_horizontal(l1 - 1, 'up')
 
     def _get_boundary_horizontal(self, layer, direction):

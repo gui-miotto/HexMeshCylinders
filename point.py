@@ -1,4 +1,5 @@
 from itertools import product
+import numpy as np
 
 from headers import point_header
 
@@ -7,6 +8,7 @@ class PointList():
         self.isin = isin
         self.vertex = vertex
         self._pointlist = self._build_list()  # list of vertex addresses (not space locations)
+        self._pointarray = self._build_array()
 
     def _build_list(self):
         points = set()
@@ -22,6 +24,12 @@ class PointList():
                     points.add(new_address)
         return list(points)
 
+    def _build_array(self):
+        points = np.ones(self.vertex.shape[:-1], dtype=np.int) * -1  #TODO: replace this by a sparse matrix
+        for n, p in enumerate(self._pointlist):
+            points[p] = n
+        return points
+
     def __getitem__(self, key):
         return self._pointlist[key]
 
@@ -29,7 +37,7 @@ class PointList():
         return len(self._pointlist)
 
     def index(self, i, j, k):
-        return self._pointlist.index((i, j, k))
+        return self._pointarray[(i, j, k)]
 
     def export(self, filepath):
         with open(filepath + 'points', 'w') as fw:
