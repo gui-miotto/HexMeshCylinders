@@ -4,13 +4,13 @@ import numpy as np
 from cylinder import Cylinder
 from point import PointList
 from cell import CellList
-from face import FaceList
+from face import FaceList, Patch
 from printer import Printer
 
 class Stack():
     def __init__(self, cylinders, verbose=False):
         self.edge = Cylinder.edge
-        self.cylinders = cylinders
+        self.cylinders = cylinders[::-1]
         self._print = Printer(verbose)
 
         self.max_diam = max([c.diam for c in self.cylinders])
@@ -25,6 +25,22 @@ class Stack():
         self.celllist = CellList(self.isin, self.pointlist)
         self._print("Generating list of faces")
         self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.cylinders, verbose)
+
+    def name_patches(self, patch_specs):
+        new_patches = []
+        old_patches = self.facelist.patches
+        assert len(old_patches) - 1 == patch_specs[-1].top_patch
+
+        base_patch = 0
+        for pspec in patch_specs:
+            patches_to_merge = old_patches[base_patch : pspec.top_patch+1]
+            startFace = patches_to_merge[0].startFace
+            nFaces = sum([p.nFaces for p in patches_to_merge])
+            newPatch = Patch(name=pspec.name, type=pspec.type, startFace=startFace, nFaces=nFaces)
+            new_patches.append(newPatch)
+            base_patch = pspec.top_patch + 1
+
+        self.facelist.patches = new_patches
 
     def export(self, filepath):
         self._print("Exporting point list")

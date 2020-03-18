@@ -1,10 +1,13 @@
 from itertools import product
+from collections import namedtuple
 import multiprocessing
 import numpy as np
 
 from printer import Printer
 from headers import faces_header, owner_header, neighbour_header, boundary_header
 
+Patch = namedtuple('Patch', ['name', 'type', 'startFace', 'nFaces'])
+PatchSpec = namedtuple('PatchSpec', ['name', 'type', 'top_patch'])
 
 class Face():
     def __init__(self, vertex, owner, neighbour=None):
@@ -25,18 +28,18 @@ class FaceList():
         self.patches = []
         self._build_list()
 
-    def n_internal_faces(self):
-        n = 0
-        for f in self._facelist:
-            if f.neighbour is not None:
-                n += 1
-        return n
-
     def export(self, filepath):
         self._print("Exporting faces, owner and neighboor")
         self._export_faces(filepath)
         self._print("Exporting boundary")
         self._export_boundaries(filepath)
+
+    def _num_internal_faces(self):
+        n = 0
+        for f in self._facelist:
+            if f.neighbour is not None:
+                n += 1
+        return n
 
     def _export_faces(self, filepath):
         n_faces = len(self._facelist)
@@ -53,7 +56,7 @@ class FaceList():
 
         f_neigh = open(filepath + 'neighbour', 'w')
         f_neigh.write(neighbour_header + '\n')
-        f_neigh.write(str(self.n_internal_faces()) + '\n')
+        f_neigh.write(str(self._num_internal_faces()) + '\n')
         f_neigh.write('(\n')
 
         for face in self._facelist:
@@ -76,11 +79,11 @@ class FaceList():
             fw.write(str(len(self.patches)) + "\n")
             fw.write("(\n")
             for pid, patch in enumerate(self.patches):
-                fw.write("patch_" + str(pid) + "\n")
+                fw.write(patch.name + "\n")
                 fw.write("\t{\n")
-                fw.write("\t\ttype \t patch;\n")
-                fw.write("\t\tnFaces \t " + str(patch[1])+ ";\n")
-                fw.write("\t\tstartFace \t " + str(patch[0])+ ";\n")
+                fw.write("\t\ttype       " + patch.type + ";\n")
+                fw.write("\t\tnFaces     " + str(patch.nFaces)+ ";\n")
+                fw.write("\t\tstartFace  " + str(patch.startFace)+ ";\n")
                 fw.write("\t}\n")
             fw.write(")\n")
 
@@ -90,7 +93,6 @@ class FaceList():
         #self._get_internal_faces_serially()
         self._print("Generating list of boundary faces")
         self._get_boundary_faces()
-
 
     def _get_internal_faces_in_parallel(self):
         # Does the same job as _get_internal_faces_serially() but with multiprocessing
@@ -112,7 +114,6 @@ class FaceList():
             self._facelist.extend(proc_faces)
             procs[n_p].join()
 
-
     def _get_internal_faces(self, queue, index):
         # This function should be called only via _get_internal_faces_in_parallel()
         # TODO: move this function definition inside _get_internal_faces_in_parallel()
@@ -126,7 +127,6 @@ class FaceList():
 
         internal_faces = [face for face in all_faces if face.neighbour is not None]
         queue.put(internal_faces)
-
 
     def _get_internal_faces_serially(self):
         # Does the same job as _get_internal_faces_in_parallel() but using a single process
@@ -183,7 +183,9 @@ class FaceList():
                     face = self.celllist.get_cell_face(cell_add, 'down')
                     self._facelist.append(face)
                     nFaces += 1
-        self.patches.append((startFace, nFaces))
+        newPatch = Patch(name='patch_' + str(len(self.patches)), type='patch',
+            startFace=startFace, nFaces=nFaces)
+        self.patches.append(newPatch)
 
     def _get_boundary_vertical(self, layers):
         startFace = len(self._facelist)
@@ -209,4 +211,6 @@ class FaceList():
                         face = self.celllist.get_cell_face(cell_add, bd)
                         self._facelist.append(face)
                         nFaces += 1
-        self.patches.append((startFace, nFaces))
+        newPatch = Patch(name='patch_' + str(len(self.patches)), type='patch',
+            startFace=startFace, nFaces=nFaces)
+        self.patches.append(newPatch)

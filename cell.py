@@ -67,7 +67,6 @@ class CellList():
             cell_to_index = self.index(cell_to)
             if cell_from_index > cell_to_index:
                 return Face(vertex[::-1], cell_to_index, cell_from_index)
-                #return Face(vertex[::-1], cell_from_index, cell_to_index)
             else:
                 return Face(vertex, cell_from_index, cell_to_index)
 
