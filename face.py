@@ -1,5 +1,8 @@
 from itertools import product
+import multiprocessing
+import numpy as np
 
+from printer import Printer
 from headers import faces_header, owner_header, neighbour_header, boundary_header
 
 
@@ -16,7 +19,7 @@ class FaceList():
         self.pointlist = pointlist
         self.celllist = celllist
         self.cylinders = cylinders
-        self.verbose = verbose
+        self._print = Printer(verbose)
 
         self._facelist = []
         self.patches = []
@@ -30,7 +33,9 @@ class FaceList():
         return n
 
     def export(self, filepath):
+        self._print("Exporting faces, owner and neighboor")
         self._export_faces(filepath)
+        self._print("Exporting boundary")
         self._export_boundaries(filepath)
 
     def _export_faces(self, filepath):
@@ -81,11 +86,50 @@ class FaceList():
 
     def _build_list(self):
         self._print("Generating list of internal faces")
-        self._get_internal_faces()
+        self._get_internal_faces_in_parallel()
+        #self._get_internal_faces_serially()
         self._print("Generating list of boundary faces")
         self._get_boundary_faces()
 
-    def _get_internal_faces(self):
+
+    def _get_internal_faces_in_parallel(self):
+        # Does the same job as _get_internal_faces_serially() but with multiprocessing
+        n_cpus = multiprocessing.cpu_count()
+        nx, ny, nz = self.isin.shape
+        index = list(product(range(nx), range(ny), range(nz)))
+        index = np.array_split(index, n_cpus)
+
+        procs, queues = [], []
+        for n_p in range(n_cpus):
+            q = multiprocessing.Queue()
+            p = multiprocessing.Process(target=self._get_internal_faces, args=(q, index[n_p]))
+            p.start()
+            procs.append(p)
+            queues.append(q)
+
+        for n_p in range(n_cpus):
+            proc_faces = queues[n_p].get()
+            self._facelist.extend(proc_faces)
+            procs[n_p].join()
+
+
+    def _get_internal_faces(self, queue, index):
+        # This function should be called only via _get_internal_faces_in_parallel()
+        # TODO: move this function definition inside _get_internal_faces_in_parallel()
+        all_faces = []
+        for i, j, k in index:
+            if self.isin[i, j, k]:
+                cell_add = (i, j, k)
+                all_faces.append(self.celllist.get_cell_face(cell_add, 'up'))
+                all_faces.append(self.celllist.get_cell_face(cell_add, 'north'))
+                all_faces.append(self.celllist.get_cell_face(cell_add, 'east'))
+
+        internal_faces = [face for face in all_faces if face.neighbour is not None]
+        queue.put(internal_faces)
+
+
+    def _get_internal_faces_serially(self):
+        # Does the same job as _get_internal_faces_in_parallel() but using a single process
         nx, ny, nz = self.isin.shape
         all_faces = []
         for i, j, k in product(range(nx), range(ny), range(nz)):
@@ -166,7 +210,3 @@ class FaceList():
                         self._facelist.append(face)
                         nFaces += 1
         self.patches.append((startFace, nFaces))
-
-    def _print(self, text):
-        if self.verbose:
-            print(text)

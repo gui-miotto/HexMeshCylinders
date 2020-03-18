@@ -5,12 +5,13 @@ from cylinder import Cylinder
 from point import PointList
 from cell import CellList
 from face import FaceList
+from printer import Printer
 
 class Stack():
     def __init__(self, cylinders, verbose=False):
         self.edge = Cylinder.edge
         self.cylinders = cylinders
-        self.verbose = verbose
+        self._print = Printer(verbose)
 
         self.max_diam = max([c.diam for c in self.cylinders])
 
@@ -26,8 +27,11 @@ class Stack():
         self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.cylinders, verbose)
 
     def export(self, filepath):
+        self._print("Exporting point list")
         self.pointlist.export(filepath)
+        self._print("Exporting face list")
         self.facelist.export(filepath)
+        self._print("Done exporting")
 
     def _who_is_in(self):
         h_max = (self.max_diam - 1) * self.edge / 2.
@@ -67,8 +71,4 @@ class Stack():
         vertex = np.moveaxis(vertex, 0, -1)
 
         return vertex
-
-    def _print(self, text):
-        if self.verbose:
-            print(text)
 

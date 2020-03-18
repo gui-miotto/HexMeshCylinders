@@ -6,10 +6,10 @@ class PointList():
     def __init__(self, isin, vertex):
         self.isin = isin
         self.vertex = vertex
-        self._pointlist = []  # list of vertex addresses (not space locations)
-        self._build_list()
+        self._pointlist = self._build_list()  # list of vertex addresses (not space locations)
 
     def _build_list(self):
+        points = set()
         inc = [0, 1]
         nx, ny, nz = self.isin.shape
         for i, j, k in product(range(nx), range(ny), range(nz)):
@@ -19,8 +19,8 @@ class PointList():
                         i + inc_x,
                         j + inc_y,
                         k + inc_z)
-                    if new_address not in self._pointlist:
-                        self._pointlist.append(new_address)
+                    points.add(new_address)
+        return list(points)
 
     def __getitem__(self, key):
         return self._pointlist[key]
