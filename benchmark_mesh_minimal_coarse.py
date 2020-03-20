@@ -5,7 +5,7 @@ from cylinder import Cylinder
 from face import PatchSpec
 
 
-edge = 2E-6
+edge = 10E-6
 
 def get_odd_diam(float_num):
     int_num = int(round(float_num / edge))
@@ -14,8 +14,8 @@ def get_odd_diam(float_num):
 
 Cylinder.edge = edge
 cylinders = [
-    Cylinder(diameter=get_odd_diam( 50E-6), height=100E-6, n_layers= 50),
-    Cylinder(diameter=get_odd_diam(150E-6), height=200E-6, n_layers=100)
+    Cylinder(diameter=get_odd_diam( 50E-6), height=100E-6, n_layers= 5),
+    Cylinder(diameter=get_odd_diam(150E-6), height=200E-6, n_layers=10)
 ]
 
 s = Stack(cylinders, verbose=True)
@@ -26,5 +26,5 @@ s.name_patches([
         PatchSpec('nozzle', 'wall', 3),
         PatchSpec('pressure_inlet', 'patch',4)
     ])
-s.export('fake_case/constant/polyMesh_minimal_medium/')
+s.export('fake_case/constant/polyMesh_minimal_coarse/')
 

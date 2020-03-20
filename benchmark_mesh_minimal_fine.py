@@ -26,5 +26,5 @@ s.name_patches([
         PatchSpec('nozzle', 'wall', 3),
         PatchSpec('pressure_inlet', 'patch',4)
     ])
-s.export('fake_case/constant/polyMesh_minimal/')
+s.export('fake_case/constant/polyMesh_minimal_fine/')
 

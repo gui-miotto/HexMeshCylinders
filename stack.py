@@ -1,4 +1,5 @@
 from itertools import product
+from pathlib import Path
 import numpy as np
 
 from cylinder import Cylinder
@@ -44,6 +45,7 @@ class Stack():
         self.facelist.patches = new_patches
 
     def export(self, filepath):
+        Path(filepath).mkdir(parents=True, exist_ok=True)
         self._print("Exporting point list")
         self.pointlist.export(filepath)
         self._print("Exporting face list")
