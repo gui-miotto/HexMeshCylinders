@@ -29,5 +29,5 @@ s.name_patches([
         PatchSpec('pressure_vessel', 'wall', 7),
         PatchSpec('pressure_inlet', 'patch', 8)
     ])
-s.export('fake_case/constant/polyMesh/')
+s.export('fake_case/constant/polyMesh_medium/')
 

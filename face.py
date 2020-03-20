@@ -89,8 +89,8 @@ class FaceList():
 
     def _build_list(self):
         self._print("Generating list of internal faces")
-        self._get_internal_faces_in_parallel()
-        #self._get_internal_faces_serially()
+        #self._get_internal_faces_in_parallel()  # Deactivated because it was producing strange results while simulating
+        self._get_internal_faces_serially()
         self._print("Generating list of boundary faces")
         self._get_boundary_faces()
 
@@ -124,7 +124,7 @@ class FaceList():
         self._print(f'Process {proc_num} has been started')
         all_faces = []
         for n, (i, j, k) in enumerate(index):
-            if (n+1) % 200 == 0:
+            if (n+1) % 500 == 0:
                 prog = n / len(index) * 100
                 self._print(f'Process {proc_num} reached cell {n+1} of {len(index)} ({prog:.2f}%)')
             if self.isin[i, j, k]:
@@ -140,8 +140,12 @@ class FaceList():
     def _get_internal_faces_serially(self):
         # Does the same job as _get_internal_faces_in_parallel() but using a single process
         nx, ny, nz = self.isin.shape
+        n_cells = self.isin.size
         all_faces = []
-        for i, j, k in product(range(nx), range(ny), range(nz)):
+        for n, (i, j, k) in enumerate(product(range(nx), range(ny), range(nz))):
+            if (n+1) % 500 == 0:
+                prog = n / n_cells * 100
+                self._print(f'Reached cell {n+1} of {n_cells} ({prog:.2f}%)')
             if self.isin[i, j, k]:
                 cell_add = (i, j, k)
                 all_faces.append(self.celllist.get_cell_face(cell_add, 'up'))

@@ -8,6 +8,7 @@ class CellList():
         self.isin = isin
         self.pointlist = pointlist
         self._celllist = self._build_list()
+        self._cellarray = self._build_array()
 
     def get_cell_face(self, cell_address, direction):
         i, j, k = cell_address
@@ -62,13 +63,13 @@ class CellList():
         cell_to = tuple(cell_to)
         if self._is_cell_address_out_of_bounds(cell_to) or not self.isin[cell_to]:
             # This means we the face is a boundary
-            return Face(vertex, cell_from_index)
+            return Face(vertex, owner=cell_from_index)
         else:
             cell_to_index = self.index(cell_to)
-            if cell_from_index > cell_to_index:
-                return Face(vertex[::-1], cell_to_index, cell_from_index)
-            else:
-                return Face(vertex, cell_from_index, cell_to_index)
+            if cell_to_index > cell_from_index:
+                return Face(vertex, owner=cell_from_index, neighbour=cell_to_index)
+            else:  # By the way this program was constructed, we probably will never hit this else
+                return Face(vertex[::-1], owner=cell_to_index, neighbour=cell_from_index)
 
     def _is_cell_address_out_of_bounds(self, address):
         for ind, add_coord in enumerate(address):
@@ -84,6 +85,12 @@ class CellList():
                 celllist.append((i, j, k))
         return celllist
 
+    def _build_array(self):
+        cells = np.ones_like(self.isin, dtype=np.int) * -1  #TODO: replace this by a sparse matrix
+        for n, c in enumerate(self._celllist):
+            cells[c] = n
+        return cells
+
     def __getitem__(self, key):
         return self._celllist[key]
 
@@ -91,5 +98,4 @@ class CellList():
         return len(self._celllist)
 
     def index(self, key):
-        return self._celllist.index(key)
-
+        return self._cellarray[key]
