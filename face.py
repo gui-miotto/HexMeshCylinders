@@ -29,7 +29,7 @@ class FaceList():
         self._build_list()
 
     def export(self, filepath):
-        self._print("Exporting faces, owner and neighboor")
+        self._print("Exporting faces, owner and neighbour")
         self._export_faces(filepath)
         self._print("Exporting boundary")
         self._export_boundaries(filepath)
@@ -89,62 +89,17 @@ class FaceList():
 
     def _build_list(self):
         self._print("Generating list of internal faces")
-        #self._get_internal_faces_in_parallel()  # Deactivated because it was producing strange results while simulating
-        self._get_internal_faces_serially()
+        self._get_internal_faces()
         self._print("Generating list of boundary faces")
         self._get_boundary_faces()
 
-    def _get_internal_faces_in_parallel(self):
-        # Does the same job as _get_internal_faces_serially() but with multiprocessing
-        n_cpus = multiprocessing.cpu_count()
-        nx, ny, nz = self.isin.shape
-        index = np.array(list(product(range(nx), range(ny), range(nz))))
-        np.random.shuffle(index)
-        index = np.ascontiguousarray(index)  # Is this doing any good?
-        index = np.array_split(index, n_cpus)
-
-        # Start processes
-        procs, queues = [], []
-        for n_p in range(n_cpus):
-            q = multiprocessing.Queue()
-            p = multiprocessing.Process(target=self._get_internal_faces, args=(q, index[n_p], n_p))
-            p.start()
-            procs.append(p)
-            queues.append(q)
-
-        # Join processes
-        for n_p in range(n_cpus):
-            proc_faces = queues[n_p].get()
-            self._facelist.extend(proc_faces)
-            procs[n_p].join()
-
-    def _get_internal_faces(self, queue, index, proc_num):
-        # This function should be called only via _get_internal_faces_in_parallel()
-        # TODO: move this function definition inside _get_internal_faces_in_parallel()
-        self._print(f'Process {proc_num} has been started')
-        all_faces = []
-        for n, (i, j, k) in enumerate(index):
-            if (n+1) % 500 == 0:
-                prog = n / len(index) * 100
-                self._print(f'Process {proc_num} reached cell {n+1} of {len(index)} ({prog:.2f}%)')
-            if self.isin[i, j, k]:
-                cell_add = (i, j, k)
-                all_faces.append(self.celllist.get_cell_face(cell_add, 'up'))
-                all_faces.append(self.celllist.get_cell_face(cell_add, 'north'))
-                all_faces.append(self.celllist.get_cell_face(cell_add, 'east'))
-
-        internal_faces = [face for face in all_faces if face.neighbour is not None]
-        queue.put(internal_faces)
-        self._print('Process ' + str(proc_num) + ' is done')
-
-    def _get_internal_faces_serially(self):
-        # Does the same job as _get_internal_faces_in_parallel() but using a single process
+    def _get_internal_faces(self):
         nx, ny, nz = self.isin.shape
         n_cells = self.isin.size
         all_faces = []
         for n, (i, j, k) in enumerate(product(range(nx), range(ny), range(nz))):
-            if (n+1) % 500 == 0:
-                prog = n / n_cells * 100
+            if (n+1) % 1000 == 0:
+                prog = n / n_cells * 100.
                 self._print(f'Reached cell {n+1} of {n_cells} ({prog:.2f}%)')
             if self.isin[i, j, k]:
                 cell_add = (i, j, k)
@@ -152,6 +107,7 @@ class FaceList():
                 all_faces.append(self.celllist.get_cell_face(cell_add, 'north'))
                 all_faces.append(self.celllist.get_cell_face(cell_add, 'east'))
 
+        self._print("Removing boundaries from internal faces")
         internal_faces = [face for face in all_faces if face.neighbour is not None]
         self._facelist.extend(internal_faces)
 

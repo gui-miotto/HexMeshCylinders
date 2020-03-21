@@ -14,15 +14,14 @@ def get_odd_diam(float_num):
 
 Cylinder.edge = edge
 cylinders = [
-    Cylinder(diameter=get_odd_diam(350E-6), height= 50E-6, n_layers=  5),
-    Cylinder(diameter=get_odd_diam(300E-6), height=200E-6, n_layers= 25),
-    Cylinder(diameter=get_odd_diam( 50E-6), height=150E-6, n_layers= 75),
-    Cylinder(diameter=get_odd_diam(150E-6), height=200E-6, n_layers=100)
+    Cylinder(diameter=get_odd_diam(350E-6), height= 50E-6, n_layers=  5), # actuation
+    Cylinder(diameter=get_odd_diam(300E-6), height=200E-6, n_layers=100), # reservoir
+    Cylinder(diameter=get_odd_diam( 50E-6), height=150E-6, n_layers= 75), # nozzle
+    Cylinder(diameter=get_odd_diam(150E-6), height=300E-6, n_layers=150)  # Atmosphere
 ]
 
 s = Stack(cylinders, verbose=True)
 s.name_patches([
-        PatchSpec('bottom', 'wall', 0),
         PatchSpec('atmosphere', 'patch', 1),
         PatchSpec('nozzle_tip', 'wall', 2),
         PatchSpec('reservoir_nozzle', 'wall', 5),
