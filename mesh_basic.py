@@ -10,7 +10,7 @@ def get_odd_diam(float_num):
     return int_num + 1 if int_num % 2 == 0 else int_num
 
 
-Cylinder.edge = edge
+Cylinder.cell_edge = edge
 cylinders = [
     Cylinder(diameter=get_odd_diam(10E-3), height=30E-3, n_layers=60)
 ]

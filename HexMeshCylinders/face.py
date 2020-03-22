@@ -127,7 +127,7 @@ class FaceList():
             l0 = l1
 
             if cyl < n_cyls - 1:
-                if self.cylinders[cyl].diam > self.cylinders[cyl + 1].diam:
+                if self.cylinders[cyl].diameter > self.cylinders[cyl + 1].diameter:
                     self._get_boundary_horizontal(l1 - 1, 'up')
                 else:
                     self._get_boundary_horizontal(l1, 'down')

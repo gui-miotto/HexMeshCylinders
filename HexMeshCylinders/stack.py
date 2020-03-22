@@ -1,5 +1,6 @@
 from itertools import product
 from pathlib import Path
+from typing import List, Tuple
 import numpy as np
 
 from .cylinder import Cylinder
@@ -9,12 +10,23 @@ from .face import FaceList, Patch
 from .printer import Printer
 
 class Stack():
-    def __init__(self, cylinders, verbose=False):
-        self.edge = Cylinder.edge
+    def __init__(self, cylinders:List[Cylinder], verbose=False):
+        """Specifies a volume that is made of a stack of cylinders
+
+        Parameters
+        ----------
+        cylinders : List[Cylinder]
+            A list of cylinders to stack. cylinders[0] is the bottom most cylinder, and
+             cylinders[-1] is the top most
+        verbose : bool, optional
+            Print runtimet messages, by default False
+        """
+
+        self.edge = Cylinder.cell_edge
         self.cylinders = cylinders
         self._print = Printer(verbose)
 
-        self.max_diam = max([c.diam for c in self.cylinders])
+        self.max_diam = max([c.diameter for c in self.cylinders])
 
         self._print("Generating list of active cells")
         self.isin = self._who_is_in()
@@ -28,7 +40,20 @@ class Stack():
         self._print("Generating list of faces")
         self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.cylinders, verbose)
 
-    def name_patches(self, patch_specs):
+    def name_patches(self, patch_specs:Tuple[str, str, int]):
+        """Group patches, give them names and assing their types.
+
+        Parameters
+        ----------
+        patch_specs : Tuple(str, str, int)
+            A tupple containing (name, type, last_patch).
+             * name is the patch name and can be anything e.g. nozzle
+             * type is any valid OpenFoam boundary type, e.g wall
+             * last_patch is the index of last layer that will compose the grouped patch.
+               The patches between patch_specs[n-1][2] and patch_specs[n][2] will be
+               lumped together into a single patch.
+        """
+
         new_patches = []
         old_patches = self.facelist.patches
         assert len(old_patches) - 1 == patch_specs[-1].top_patch
