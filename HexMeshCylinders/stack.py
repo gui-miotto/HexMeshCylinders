@@ -2,16 +2,16 @@ from itertools import product
 from pathlib import Path
 import numpy as np
 
-from cylinder import Cylinder
-from point import PointList
-from cell import CellList
-from face import FaceList, Patch
-from printer import Printer
+from .cylinder import Cylinder
+from .point import PointList
+from .cell import CellList
+from .face import FaceList, Patch
+from .printer import Printer
 
 class Stack():
     def __init__(self, cylinders, verbose=False):
         self.edge = Cylinder.edge
-        self.cylinders = cylinders[::-1]
+        self.cylinders = cylinders
         self._print = Printer(verbose)
 
         self.max_diam = max([c.diam for c in self.cylinders])

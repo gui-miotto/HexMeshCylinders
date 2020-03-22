@@ -1,7 +1,7 @@
 from itertools import product
 import numpy as np
 
-from headers import point_header
+from .headers import point_header
 
 class PointList():
     def __init__(self, isin, vertex):

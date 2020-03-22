@@ -1,8 +1,6 @@
-import matplotlib.pyplot as plt
-
-from stack import Stack
-from cylinder import Cylinder
-from face import PatchSpec
+from HexMeshCylinders import Stack
+from HexMeshCylinders import Cylinder
+from HexMeshCylinders import PatchSpec
 
 
 edge = 0.5E-3

@@ -1,7 +1,7 @@
 from itertools import product
 import numpy as np
 
-from face import Face
+from .face import Face
 
 class CellList():
     def __init__(self, isin, pointlist):

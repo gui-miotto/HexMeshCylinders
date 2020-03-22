@@ -3,8 +3,8 @@ from collections import namedtuple
 import multiprocessing, time
 import numpy as np
 
-from printer import Printer
-from headers import faces_header, owner_header, neighbour_header, boundary_header
+from .printer import Printer
+from .headers import faces_header, owner_header, neighbour_header, boundary_header
 
 Patch = namedtuple('Patch', ['name', 'type', 'startFace', 'nFaces'])
 PatchSpec = namedtuple('PatchSpec', ['name', 'type', 'top_patch'])
