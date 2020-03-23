@@ -1,4 +1,4 @@
-import math, os, re, unittest
+import math, os, re, subprocess, unittest
 import numpy as np
 
 from HexMeshCylinders import Cylinder, Stack
@@ -43,8 +43,19 @@ class TestCheckMesh(unittest.TestCase):
 
         # Run checkMesh and store its output
         checkmesh_path = os.path.join(this_dir, 'checkMeshBinary')
-        stream = os.popen(f'{checkmesh_path} -allGeometry -allTopology -case {case_dir}')
-        cls.checkMesh_output = stream.read()
+
+        process = subprocess.Popen(
+            [checkmesh_path, '-allGeometry', '-allTopology', '-case', case_dir],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True)
+        cls.checkMesh_output, stderr = process.communicate()
+        if process.poll() != 0:
+            raise RuntimeError(stderr)
+        print(cls.checkMesh_output)
+
+        #stream = os.popen(f'{checkmesh_path} -allGeometry -allTopology -case {case_dir}')
+        #cls.checkMesh_output = stream.read()
         #print(cls.checkMesh_output)
 
     def setUp(self):
