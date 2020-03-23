@@ -43,7 +43,6 @@ class TestCheckMesh(unittest.TestCase):
 
         # Run checkMesh and store its output
         checkmesh_path = os.path.join(this_dir, 'checkMeshBinary')
-
         process = subprocess.Popen(
             [checkmesh_path, '-allGeometry', '-allTopology', '-case', case_dir],
             stdout=subprocess.PIPE,
@@ -53,10 +52,6 @@ class TestCheckMesh(unittest.TestCase):
         if process.poll() != 0:
             raise RuntimeError(stderr)
         print(cls.checkMesh_output)
-
-        #stream = os.popen(f'{checkmesh_path} -allGeometry -allTopology -case {case_dir}')
-        #cls.checkMesh_output = stream.read()
-        #print(cls.checkMesh_output)
 
     def setUp(self):
         self.analytical_volume = TestCheckMesh.analytical_volume
