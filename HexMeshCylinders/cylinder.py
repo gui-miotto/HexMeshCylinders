@@ -50,7 +50,7 @@ class Cylinder():
     @classmethod
     def conv_diam(cls, diam_in_meters:float):
         """Converts a diameter given in meters to a diameter given in a valid number of
-         cell edeges
+         cell edges.
 
         Parameters
         ----------

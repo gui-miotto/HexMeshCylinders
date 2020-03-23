@@ -1,3 +1,4 @@
+import os
 from itertools import product
 import numpy as np
 
@@ -39,8 +40,9 @@ class PointList():
     def index(self, i, j, k):
         return self._pointarray[(i, j, k)]
 
-    def export(self, filepath):
-        with open(filepath + 'points', 'w') as fw:
+    def export(self, polyMesh_path):
+        filepath = os.path.join(polyMesh_path, 'points')
+        with open(filepath, 'w') as fw:
             fw.write(point_header)
             fw.write("\n")
             fw.write(str(len(self._pointlist)) + "\n")

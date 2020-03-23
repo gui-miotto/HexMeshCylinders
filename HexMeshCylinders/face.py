@@ -1,6 +1,6 @@
 from itertools import product
 from collections import namedtuple
-import multiprocessing, time
+import multiprocessing, time, os
 import numpy as np
 
 from .printer import Printer
@@ -28,11 +28,11 @@ class FaceList():
         self.patches = []
         self._build_list()
 
-    def export(self, filepath):
+    def export(self, polyMesh_path):
         self._print("Exporting faces, owner and neighbour")
-        self._export_faces(filepath)
+        self._export_faces(polyMesh_path)
         self._print("Exporting boundary")
-        self._export_boundaries(filepath)
+        self._export_boundaries(polyMesh_path)
 
     def _num_internal_faces(self):
         n = 0
@@ -41,20 +41,23 @@ class FaceList():
                 n += 1
         return n
 
-    def _export_faces(self, filepath):
+    def _export_faces(self, polyMesh_path):
         n_faces = len(self._facelist)
 
-        f_faces = open(filepath + 'faces', 'w')
+        faces_filepath = os.path.join(polyMesh_path, 'faces')
+        f_faces = open(faces_filepath, 'w')
         f_faces.write(faces_header + '\n')
         f_faces.write(str(n_faces) + '\n')
         f_faces.write('(\n')
 
-        f_owner = open(filepath + 'owner', 'w')
+        owner_filepath = os.path.join(polyMesh_path, 'owner')
+        f_owner = open(owner_filepath, 'w')
         f_owner.write(owner_header + '\n')
         f_owner.write(str(n_faces) + '\n')
         f_owner.write('(\n')
 
-        f_neigh = open(filepath + 'neighbour', 'w')
+        neigh_filepath = os.path.join(polyMesh_path, 'neighbour')
+        f_neigh = open(neigh_filepath, 'w')
         f_neigh.write(neighbour_header + '\n')
         f_neigh.write(str(self._num_internal_faces()) + '\n')
         f_neigh.write('(\n')
@@ -73,8 +76,9 @@ class FaceList():
         f_owner.close()
         f_neigh.close()
 
-    def _export_boundaries(self, filepath):
-        with open(filepath + 'boundary', 'w') as fw:
+    def _export_boundaries(self, polyMesh_path):
+        bound_filepath = os.path.join(polyMesh_path, 'boundary')
+        with open(bound_filepath, 'w') as fw:
             fw.write(boundary_header + '\n')
             fw.write(str(len(self.patches)) + "\n")
             fw.write("(\n")
