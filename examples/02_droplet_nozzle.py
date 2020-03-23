@@ -19,4 +19,4 @@ stack.name_patches([
         PatchSpec('pressure_vessel', 'wall', 7),
         PatchSpec('pressure_inlet', 'patch', 8)
     ])
-stack.export('fake_case/constant/polyMesh/')
+stack.export('/tmp/HexMeshCylinders/droplet_nozzle')
