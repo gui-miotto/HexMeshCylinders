@@ -1,5 +1,4 @@
-import math
-from HexMeshCylinders import Cylinder, Stack, PatchSpec
+from HexMeshCylinders import Cylinder, Stack
 
 
 Cylinder.cell_edge = 1E-3  # 1 milimeter

@@ -1,5 +1,5 @@
 # HexMeshCylinders
-> Short blurb about what your product does.
+> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders of arbitrary radius and height (see examples bellow).
 
 [![Build Status][travis-image]][travis-url]
 
@@ -72,9 +72,12 @@ Distributed under the XYZ license. See ``LICENSE`` for more information.
 5. Create a new Pull Request
 
 <!-- Markdown link & img dfn's -->
+[openfoam-url]: https://www.openfoam.com/
+
+
 [npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/datadog-metrics
 [npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/github/gui-miotto/HexMeshCylindersl
+[travis-image]: https://img.shields.io/travis/gui-miotto/HexMeshCylinders/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/github/gui-miotto/HexMeshCylinders
 [wiki]: https://github.com/yourname/yourproject/wiki
