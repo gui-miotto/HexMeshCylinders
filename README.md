@@ -1,11 +1,11 @@
+![](media/hexmeshcyl.png)
+
 # HexMeshCylinders
 > HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders of arbitrary radius and height (see examples bellow).
 
 [![Build Status][travis-image]][travis-url]
 
 One to two paragraph statement about your product and what it does.
-
-![](header.png)
 
 ## Installation
 
@@ -26,6 +26,10 @@ edit autoexec.bat
 A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
 
 _For more examples and usage, please refer to the [Wiki][wiki]._
+
+<img src="media/basic_1.png" alt="basic_1" width="200"/>
+<img src="media/basic_2.png" alt="basic_2" width="200"/>
+
 
 ![](media/basic_1.png)
 ![](media/basic_2.png)
@@ -59,9 +63,9 @@ npm test
 
 Gui Miotto – [@gmiotto](https://twitter.com/gmiotto) – YourEmail@example.com
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Distributed under the MIT license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+[https://github.com/gui-miotto](https://github.com/gui-miotto)
 
 ## Contributing
 
