@@ -1,4 +1,4 @@
-![](media/hexmeshcyl.png)
+<img align="center" src="media/hexmeshcyl.png" alt="basic_1" width="500"/>
 
 # HexMeshCylinders
 > HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders of arbitrary radius and height (see examples bellow).
@@ -27,13 +27,7 @@ A few motivating and useful examples of how your product can be used. Spice this
 
 _For more examples and usage, please refer to the [Wiki][wiki]._
 
-<img src="media/basic_1.png" alt="basic_1" width="200"/>
-<img src="media/basic_2.png" alt="basic_2" width="200"/>
-
-
-![](media/basic_1.png)
-![](media/basic_2.png)
-
+<img src="media/basic_1.png" alt="basic_1" width="400"/> <img src="media/basic_2.png" alt="basic_2" width="400"/>
 
 ## Development setup
 
