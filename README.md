@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="media/hexmeshcyl.png" alt="basic_1" width="500"/>
+  <img src="media/hexmeshcyl.png" alt="hexmeshcyl" width="500"/>
 </p>
 
 <!--# HexMeshCylinders-->
-> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders of arbitrary radius and height (see examples bellow).
+> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders (see examples bellow).
 
 [![Build Status][travis-image]][travis-url]
 
@@ -25,11 +25,29 @@ edit autoexec.bat
 
 ## Usage example
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+The following example generates the mesh shown in the image bellow. For more demos, please
+ refer to the ``examples`` folder.
 
-_For more examples and usage, please refer to the [Wiki][wiki]._
 
-<img src="media/basic_1.png" alt="basic_1" width="400"/> <img src="media/basic_2.png" alt="basic_2" width="400"/>
+```python
+from HexMeshCylinders import Cylinder, Stack
+
+# Cylinder.cell_edge defines the x and y dimensions for all the cells in the mesh
+Cylinder.cell_edge = 1E-3  # 1 milimeter
+
+# The volume will be made of two cylinders,
+cylinders = [
+    Cylinder(diameter=51, height=100E-3, n_layers=100),  # this one with 51 cells on its diameter,
+    Cylinder(diameter=21, height= 50E-3, n_layers= 20),  # and this one with a diameter of 21 cells.
+]
+
+stack = Stack(cylinders, verbose=True)
+stack.export('/tmp/HexMeshCylinders/basic')
+```
+
+<p align="center">
+    <img src="media/basic_1.png" alt="basic_1" width="400"/>
+</p>
 
 ## Development setup
 
