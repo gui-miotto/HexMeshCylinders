@@ -3,24 +3,19 @@
 </p>
 
 <!--# HexMeshCylinders-->
-> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders (see examples bellow).
+> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders.
 
 [![Build Status][travis-image]][travis-url]
 
-One to two paragraph statement about your product and what it does.
+I've created this simple tool after having problems with spurious currents (a.k.a. parasitic currents) in **interFoam**. I was working on microfluidics cases, but the results were not good because spurious currents were deforming the droplets. It is known that regular meshes can attenuate the problems with spurious currents, therefore I wanted to try that. I tried to create these meshes using **blockMesh** and **gmsh**, however, because my volumes were cylindrical (nozzles, reservoirs, etc.), I didn't manage to get what I wanted. So I decided to write this tool.
+
+The problem I was working on was the formation of droplets out of nozzles measuring 50 micrometers in diameter. The regular mesh solved my problems with spurious currents. (I hope to upload a video of it soon).
+
 
 ## Installation
 
-OS X & Linux:
-
 ```sh
-npm install my-crazy-module --save
-```
-
-Windows:
-
-```sh
-edit autoexec.bat
+pip install hexmeshcylinders
 ```
 
 ## Usage example
@@ -49,53 +44,16 @@ stack.export('/tmp/HexMeshCylinders/basic')
     <img src="media/basic_1.png" alt="basic_1" width="400"/>
 </p>
 
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
-```
-
-## Release History
-
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
 
 ## Meta
 
-Gui Miotto – [@gmiotto](https://twitter.com/gmiotto) – YourEmail@example.com
+Gui Miotto – [@gmiotto](https://twitter.com/gmiotto)
 
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://github.com/gui-miotto](https://github.com/gui-miotto)
 
-## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
-
 <!-- Markdown link & img dfn's -->
 [openfoam-url]: https://www.openfoam.com/
-
-
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
 [travis-image]: https://img.shields.io/travis/gui-miotto/HexMeshCylinders/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/github/gui-miotto/HexMeshCylinders
-[wiki]: https://github.com/yourname/yourproject/wiki

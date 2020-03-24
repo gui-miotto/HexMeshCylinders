@@ -1,4 +1,9 @@
-.vscode
-*.egg-info
 __pycache__
-dummy_case
+
+*.egg-info
+build
+dist
+
+.vscode
+
+polyMesh
