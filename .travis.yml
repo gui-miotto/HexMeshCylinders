@@ -15,7 +15,7 @@ before_install:
   - sudo add-apt-repository http://dl.openfoam.org/ubuntu
   - sudo apt-get update
   - sudo apt-get -y install openfoam7
-  - sudo source /opt/openfoam7/etc/bashrc
+  - source /opt/openfoam7/etc/bashrc
 
 install:
   - pip install -r requirements.txt
