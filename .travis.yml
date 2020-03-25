@@ -2,16 +2,16 @@ dist: bionic
 
 language: python
 
+os: linux
+
 python:
   - "3.6"
   - "3.7"
   - "3.8"
 
-sudo: true
-
 before_install:
   # Install OpenFoam
-  #- sh -c "wget -O - http://dl.openfoam.org/gpg.key | apt-key add -"
+  - sh -c "wget -O - http://dl.openfoam.org/gpg.key | apt-key add -"
   - sudo add-apt-repository http://dl.openfoam.org/ubuntu
   - sudo apt-get update
   - sudo apt-get -y install openfoam7
