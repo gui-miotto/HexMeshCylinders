@@ -42,7 +42,6 @@ class TestCheckMesh(unittest.TestCase):
         stack.export(mesh_dir)
 
         # Run checkMesh and store its output
-        #checkmesh_path = os.path.join(this_dir, 'checkMeshBinary')
         process = subprocess.Popen(
             ['checkMesh', '-allGeometry', '-allTopology', '-case', case_dir],
             stdout=subprocess.PIPE,
