@@ -44,6 +44,11 @@ stack.export('/tmp/HexMeshCylinders/basic')
     <img src="media/basic_1.png" alt="basic_1" width="400"/>
 </p>
 
+## Requirements
+
+Requires [numpy][numpy-url]. If you want to run the tests, you will also need to have
+ [OpenFOAM][openfoam-git-url] installed.
+
 
 ## Meta
 
@@ -55,5 +60,7 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 
 <!-- Markdown link & img dfn's -->
 [openfoam-url]: https://www.openfoam.com/
+[openfoam-git-url]: https://github.com/OpenFOAM/OpenFOAM-7
+[numpy-url]: https://github.com/numpy/numpy
 [travis-image]: https://img.shields.io/travis/gui-miotto/HexMeshCylinders/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/github/gui-miotto/HexMeshCylinders
