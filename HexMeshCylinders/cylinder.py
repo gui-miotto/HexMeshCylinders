@@ -7,7 +7,7 @@ class Cylinder():
 
     cell_edge = None
 
-    def __init__(self, diameter:int, height:float, n_layers:int):
+    def __init__(self, diameter:int, height:float, n_layers:int=None):
         """ Specifies a cylinder to be used to create the final volume (a stack of cylinders).
 
         Parameters
@@ -24,18 +24,23 @@ class Cylinder():
              layer_height of size height/n_layers meters.
         """
 
-        if type(diameter) is not int:
+        if type(diameter) is not int :
             raise TypeError('diameter must be an integer')
         if diameter % 2 != 1 and diameter > 0:
             raise ValueError('diameter must be a positive odd number')
         if Cylinder.cell_edge is None:
             raise AttributeError('A value for Cylinder.edge must be given')
+        if n_layers is not None and not np.issubdtype(type(n_layers), np.integer):
+            raise TypeError('n_layers must be an integer or None')
 
+        if n_layers is None:
+            self.n_layers = int(round(height / Cylinder.cell_edge))
+        else:
+            self.n_layers = n_layers
+        self.vertical_spacing = np.linspace(0, height, self.n_layers + 1)
+        self.height = height
         self.diameter = diameter
         self.radius = diameter * Cylinder.cell_edge / 2.
-        self.height = height
-        self.n_layers = n_layers
-        self.vertical_spacing = np.linspace(0, height, n_layers + 1)
 
     def who_is_in(self, center_locations):
         #TODO: can be improved by symmetry
