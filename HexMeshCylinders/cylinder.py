@@ -21,7 +21,9 @@ class Cylinder():
             Height of the cylinder in meters.
         n_layers : int
             Into how many layers will the cylinder be divided. All layers will have equal
-             layer_height of size height/n_layers meters.
+             layer_height of size height/n_layers meters. If n_layers=None, then n_layers
+             will be equal to round(height/Cylinder.cell_edge), i.e. layer_height will be
+             aproximatelly Cylinder.cell_edge.
         """
 
         if type(diameter) is not int :
