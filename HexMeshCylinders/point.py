@@ -4,6 +4,7 @@ import numpy as np
 
 from .headers import point_header
 
+
 class PointList():
     def __init__(self, isin, vertex):
         self.isin = isin
@@ -26,7 +27,7 @@ class PointList():
         return list(points)
 
     def _build_array(self):
-        points = np.ones(self.vertex.shape[:-1], dtype=np.int) * -1  #TODO: replace this by a sparse matrix
+        points = np.ones(self.vertex.shape[:-1], dtype=np.int) * -1  # TODO: replace by sparse ?
         for n, p in enumerate(self._pointlist):
             points[p] = n
         return points

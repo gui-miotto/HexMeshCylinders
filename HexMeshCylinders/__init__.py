@@ -1,4 +1,3 @@
-from .stack import Stack
-from .cylinder import Cylinder
-from .face import PatchSpec
-
+from .stack import Stack  # noqa
+from .cylinder import Cylinder  # noqa
+from .face import PatchSpec  # noqa

@@ -3,6 +3,7 @@ import numpy as np
 
 from .face import Face
 
+
 class CellList():
     def __init__(self, isin, pointlist):
         self.isin = isin
@@ -32,29 +33,29 @@ class CellList():
         elif direction == "west":
             cell_to = cell_from + [-1, 0, 0]
             vertex = (
-                self.pointlist.index(i, j,     k    ),
+                self.pointlist.index(i, j,     k),
                 self.pointlist.index(i, j,     k + 1),
                 self.pointlist.index(i, j + 1, k + 1),
-                self.pointlist.index(i, j + 1, k    ))
+                self.pointlist.index(i, j + 1, k))
         elif direction == "east":
             cell_to = cell_from + [1, 0, 0]
             vertex = (
-                self.pointlist.index(i + 1, j,     k    ),
-                self.pointlist.index(i + 1, j + 1, k    ),
+                self.pointlist.index(i + 1, j,     k),
+                self.pointlist.index(i + 1, j + 1, k),
                 self.pointlist.index(i + 1, j + 1, k + 1),
                 self.pointlist.index(i + 1, j,     k + 1))
         elif direction == "north":
             cell_to = cell_from + [0, 1, 0]
             vertex = (
-                self.pointlist.index(i,     j + 1, k    ),
+                self.pointlist.index(i,     j + 1, k),
                 self.pointlist.index(i,     j + 1, k + 1),
                 self.pointlist.index(i + 1, j + 1, k + 1),
-                self.pointlist.index(i + 1, j + 1, k    ))
+                self.pointlist.index(i + 1, j + 1, k))
         elif direction == "south":
             cell_to = cell_from + [0, -1, 0]
             vertex = (
-                self.pointlist.index(i,     j, k    ),
-                self.pointlist.index(i + 1, j, k    ),
+                self.pointlist.index(i,     j, k),
+                self.pointlist.index(i + 1, j, k),
                 self.pointlist.index(i + 1, j, k + 1),
                 self.pointlist.index(i,     j, k + 1))
         else:
@@ -86,7 +87,7 @@ class CellList():
         return celllist
 
     def _build_array(self):
-        cells = np.ones_like(self.isin, dtype=np.int) * -1  #TODO: replace this by a sparse matrix
+        cells = np.ones_like(self.isin, dtype=np.int) * -1  # TODO: replace this by a sparse matrix
         for n, c in enumerate(self._celllist):
             cells[c] = n
         return cells

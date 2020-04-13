@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Printer():
     def __init__(self, verbose):
         self.verbose = verbose

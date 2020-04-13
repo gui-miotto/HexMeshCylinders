@@ -1,13 +1,13 @@
 from itertools import product
 from collections import namedtuple
-import multiprocessing, time, os
-import numpy as np
+import os
 
 from .printer import Printer
 from .headers import faces_header, owner_header, neighbour_header, boundary_header
 
 Patch = namedtuple('Patch', ['name', 'type', 'startFace', 'nFaces'])
 PatchSpec = namedtuple('PatchSpec', ['name', 'type', 'top_patch'])
+
 
 class Face():
     def __init__(self, vertex, owner, neighbour=None):
@@ -86,8 +86,8 @@ class FaceList():
                 fw.write(patch.name + "\n")
                 fw.write("\t{\n")
                 fw.write("\t\ttype       " + patch.type + ";\n")
-                fw.write("\t\tnFaces     " + str(patch.nFaces)+ ";\n")
-                fw.write("\t\tstartFace  " + str(patch.startFace)+ ";\n")
+                fw.write("\t\tnFaces     " + str(patch.nFaces) + ";\n")
+                fw.write("\t\tstartFace  " + str(patch.startFace) + ";\n")
                 fw.write("\t}\n")
             fw.write(")\n")
 
@@ -151,16 +151,16 @@ class FaceList():
                 cell_add = (i, j, k)
                 # For each of the four directions, check if cell is at the edge
                 # of the grid or if it has no neighbour
-                if direction=='up' and (k == nz - 1 or not self.isin[i, j, k + 1]):
+                if direction == 'up' and (k == nz - 1 or not self.isin[i, j, k + 1]):
                     face = self.celllist.get_cell_face(cell_add, 'up')
                     self._facelist.append(face)
                     nFaces += 1
-                if direction=='down' and (k == 0 or not self.isin[i, j, k - 1]):
+                if direction == 'down' and (k == 0 or not self.isin[i, j, k - 1]):
                     face = self.celllist.get_cell_face(cell_add, 'down')
                     self._facelist.append(face)
                     nFaces += 1
         newPatch = Patch(name='patch_' + str(len(self.patches)), type='patch',
-            startFace=startFace, nFaces=nFaces)
+                         startFace=startFace, nFaces=nFaces)
         self.patches.append(newPatch)
 
     def _get_boundary_vertical(self, layers):
@@ -188,5 +188,5 @@ class FaceList():
                         self._facelist.append(face)
                         nFaces += 1
         newPatch = Patch(name='patch_' + str(len(self.patches)), type='patch',
-            startFace=startFace, nFaces=nFaces)
+                         startFace=startFace, nFaces=nFaces)
         self.patches.append(newPatch)

@@ -62,5 +62,7 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 [openfoam-url]: https://www.openfoam.com/
 [openfoam-git-url]: https://github.com/OpenFOAM/OpenFOAM-7
 [numpy-url]: https://github.com/numpy/numpy
-[travis-image]: https://img.shields.io/travis/gui-miotto/HexMeshCylinders/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/github/gui-miotto/HexMeshCylinders
+[travis-image]: https://travis-ci.org/gui-miotto/HexMeshCylinders.svg?branch=master
+[travis-url]: https://travis-ci.org/gui-miotto/HexMeshCylinders
+
+
