@@ -39,11 +39,13 @@ class Cylinder():
             self.n_layers = n_layers
         self.vertical_spacing = np.linspace(0, height, self.n_layers + 1)
         self.height = height
-        self.diameter = diameter
-        self.radius = diameter * Cylinder.cell_edge / 2.
+        self.diameter = diameter  # here given in number of cells
+        self.radius = diameter * Cylinder.cell_edge / 2.  # here given in meters
+
+
+
 
     def who_is_in(self, center_locations):
-        #TODO: can be improved by symmetry
         ni, nj, _ = center_locations.shape
         isin = np.zeros((ni, ni), dtype=bool)
         for i, j in product(range(ni), range(ni)):
