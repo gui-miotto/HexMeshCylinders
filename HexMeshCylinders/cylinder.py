@@ -48,10 +48,6 @@ class Cylinder():
 
 
     def who_is_in(self, center_locations):
-<<<<<<< HEAD
-=======
-        # TODO: can be improved by symmetry
->>>>>>> master
         ni, nj, _ = center_locations.shape
         isin = np.zeros((ni, ni), dtype=bool)
         for i, j in product(range(ni), range(ni)):
