@@ -18,8 +18,10 @@ before_install:
   - source /opt/openfoam7/etc/bashrc
 
 install:
+  - python -m pip install flake8
   - pip install -r requirements.txt
   - pip install .
 
 script:
   - pytest
+  - flake8 --max-line-length=100 --show-source HexMeshCylinders

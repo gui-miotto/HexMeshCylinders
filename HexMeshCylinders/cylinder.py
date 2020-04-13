@@ -7,7 +7,7 @@ class Cylinder():
 
     cell_edge = None
 
-    def __init__(self, diameter:int, height:float, n_layers:int=None):
+    def __init__(self, diameter: int, height: float, n_layers: int = None):
         """ Specifies a cylinder to be used to create the final volume (a stack of cylinders).
 
         Parameters
@@ -21,10 +21,12 @@ class Cylinder():
             Height of the cylinder in meters.
         n_layers : int
             Into how many layers will the cylinder be divided. All layers will have equal
-             layer_height of size height/n_layers meters.
+             layer_height of size height/n_layers meters. If n_layers=None, then n_layers
+             will be equal to round(height/Cylinder.cell_edge), i.e. layer_height will be
+             aproximatelly Cylinder.cell_edge.
         """
 
-        if type(diameter) is not int :
+        if type(diameter) is not int:
             raise TypeError('diameter must be an integer')
         if diameter % 2 != 1 and diameter > 0:
             raise ValueError('diameter must be a positive odd number')
@@ -46,6 +48,10 @@ class Cylinder():
 
 
     def who_is_in(self, center_locations):
+<<<<<<< HEAD
+=======
+        # TODO: can be improved by symmetry
+>>>>>>> master
         ni, nj, _ = center_locations.shape
         isin = np.zeros((ni, ni), dtype=bool)
         for i, j in product(range(ni), range(ni)):
@@ -55,7 +61,7 @@ class Cylinder():
         return isin
 
     @classmethod
-    def conv_diam(cls, diam_in_meters:float):
+    def conv_diam(cls, diam_in_meters: float):
         """Converts a diameter given in meters to a diameter given in a valid number of
          cell edges.
 

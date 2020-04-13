@@ -1,6 +1,5 @@
-from itertools import product
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 import numpy as np
 
 from .cylinder import Cylinder
@@ -9,8 +8,9 @@ from .cell import CellList
 from .face import FaceList, Patch, PatchSpec
 from .printer import Printer
 
+
 class Stack():
-    def __init__(self, cylinders:List[Cylinder], verbose=False):
+    def __init__(self, cylinders: List[Cylinder], verbose=False):
         """Specifies a volume that is made of a stack of cylinders
 
         Parameters
@@ -36,7 +36,7 @@ class Stack():
         self.pointlist = PointList(self.isin, self.vertex)
         self._print("Indexing active cells")
         self.celllist = CellList(self.isin, self.pointlist)
-        self._print("Number of active cells " + str(len(self.celllist)) + " of " + str(self.isin.flatten().shape[0]))
+        self._print(f"Number of active cells{len(self.celllist)} of {self.isin.flatten().shape[0]}")
         self._print("Generating list of faces")
         self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.cylinders, verbose)
 
@@ -47,7 +47,7 @@ class Stack():
         """
         return len(self.facelist.patches)
 
-    def name_patches(self, patch_specs:List[PatchSpec]):
+    def name_patches(self, patch_specs: List[PatchSpec]):
         """Group patches, give them names and assing their types.
 
         Parameters
@@ -71,7 +71,7 @@ class Stack():
 
         base_patch = 0
         for pspec in patch_specs:
-            patches_to_merge = old_patches[base_patch : pspec.top_patch+1]
+            patches_to_merge = old_patches[base_patch:pspec.top_patch+1]
             startFace = patches_to_merge[0].startFace
             nFaces = sum([p.nFaces for p in patches_to_merge])
             newPatch = Patch(name=pspec.name, type=pspec.type, startFace=startFace, nFaces=nFaces)
@@ -126,4 +126,3 @@ class Stack():
         vertex = np.moveaxis(vertex, 0, -1)
 
         return vertex
-
