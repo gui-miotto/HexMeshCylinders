@@ -1,8 +1,13 @@
 from pathlib import Path
 from typing import List
+import math
+
+
 import numpy as np
 
-from .cylinder import Cylinder
+from .Shapes.shape2D import Shape2D, BoundingRectangle
+
+
 from .point import PointList
 from .cell import CellList
 from .face import FaceList, Patch, PatchSpec
@@ -10,7 +15,7 @@ from .printer import Printer
 
 
 class Stack():
-    def __init__(self, cylinders: List[Cylinder], verbose=False):
+    def __init__(self, cell_edge, verbose=False):
         """Specifies a volume that is made of a stack of cylinders
 
         Parameters
@@ -22,12 +27,42 @@ class Stack():
             Print runtimet messages, by default False
         """
 
-        self.edge = Cylinder.cell_edge
-        self.cylinders = cylinders
+        self.edge = cell_edge
         self._print = Printer(verbose)
+        self.verbose = verbose
 
-        self.max_diam = max([c.diameter for c in self.cylinders])
+        self.br = BoundingRectangle(0., 0., 0., 0.)
+        self.z_cell_coords = [0.]
+        self.shapes = []
+        self.n_layers = []
 
+
+    def add_solid(self, shape2d: Shape2D, height: float, n_layers=None):
+        if n_layers is not None and not np.issubdtype(type(n_layers), np.integer):
+            raise TypeError('n_layers must be an integer or None')
+        if n_layers is None:
+            n_layers = int(round(height / self.edge))
+
+        self.shapes.append(shape2d)
+        self.n_layers.append(n_layers)
+
+        # Append new z_cell_coords
+        current_top = self.z_cell_coords[-1]
+        new_top = current_top + height
+        vertical_spacing = np.linspace(current_top, new_top, n_layers + 1).tolist()
+        self.z_cell_coords.extend(vertical_spacing[1:])
+
+        # Adjust bounding rectangle
+        sbr = shape2d.bounding_rectangle
+        self.br = BoundingRectangle(
+            min_x=min(self.br.min_x, sbr.min_x),
+            max_x=max(self.br.max_x, sbr.max_x),
+            min_y=min(self.br.min_y, sbr.min_y),
+            max_y=max(self.br.max_y, sbr.max_y),
+        )
+
+
+    def build_mesh(self):
         self._print("Generating list of active cells")
         self.isin = self._who_is_in()
         self._print("Generating wireframe")
@@ -38,7 +73,8 @@ class Stack():
         self.celllist = CellList(self.isin, self.pointlist)
         self._print(f"Number of active cells{len(self.celllist)} of {self.isin.flatten().shape[0]}")
         self._print("Generating list of faces")
-        self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.cylinders, verbose)
+        self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.n_layers, self.verbose)
+
 
     @property
     def n_patches(self):
@@ -89,40 +125,40 @@ class Stack():
         self._print("Done exporting")
 
     def _who_is_in(self):
-        h_max = (self.max_diam - 1) * self.edge / 2.
-        h_min = -h_max
-        horiz_spacing = np.linspace(h_min, h_max, self.max_diam)
-
-        cx, cy = np.meshgrid(horiz_spacing, horiz_spacing)
+        # Create the horizontal grid
+        x_cell_centers = self._get_vertical_cell_centers(self.br.min_x, self.br.max_x)
+        y_cell_centers = self._get_vertical_cell_centers(self.br.min_y, self.br.max_y)
+        cx, cy = np.meshgrid(x_cell_centers, y_cell_centers)
         centers_2D = np.array([cx, cy])
-        centers_2D = np.moveaxis(centers_2D, 0, -1)
+        centers_2D = np.swapaxes(centers_2D, 0, 2)
 
-        n_layers = sum([c.n_layers for c in self.cylinders])
+        total_n_layers = sum(self.n_layers)
 
-        isin = np.zeros((self.max_diam, self.max_diam, n_layers), dtype=bool)
+        isin = np.zeros((centers_2D.shape[0], centers_2D.shape[1], total_n_layers), dtype=bool)
         k = 0
-        for c in self.cylinders:
-            c_isin = c.who_is_in(centers_2D)
-            isin[:, :, k:k+c.n_layers] = c_isin[:, :, np.newaxis]
-            k += c.n_layers
+        for shape2d, n_layers in zip(self.shapes, self.n_layers):
+            shape2d_isin = shape2d.who_is_in(centers_2D)
+            isin[:, :, k:k+n_layers] = shape2d_isin[:, :, np.newaxis]
+            k += n_layers
 
         return isin
 
+    def _get_vertical_cell_centers(self, min_c, max_c):
+        n_cells = math.ceil((max_c - min_c) / self.edge)
+        half_spam = (n_cells - 1) * self.edge / 2.
+        cell_coords = np.linspace(-half_spam, half_spam, n_cells)
+        return cell_coords
+
+    def _get_vertical_cell_coords(self, min_c, max_c):
+        n_cells = math.ceil((max_c - min_c) / self.edge)
+        half_spam = n_cells * self.edge / 2.
+        cell_coords = np.linspace(-half_spam, half_spam, n_cells + 1)
+        return cell_coords
+
     def _build_vertex(self):
-        h_max = self.max_diam * self.edge / 2.
-        h_min = -h_max
-        horiz_spacing = np.linspace(h_min, h_max, self.max_diam + 1)
-
-        vert_spacing = np.array([])
-        height_shift = 0
-        for c in self.cylinders:
-            cyl_vert_spa = c.vertical_spacing[:-1] + height_shift
-            vert_spacing = np.hstack((vert_spacing, cyl_vert_spa))
-            height_shift += c.height
-        vert_spacing = np.hstack((vert_spacing, height_shift))
-
-        vx, vy, vz = np.meshgrid(horiz_spacing, horiz_spacing, vert_spacing, indexing='ij')
+        x_cell_coords = self._get_vertical_cell_coords(self.br.min_x, self.br.max_x)
+        y_cell_coords = self._get_vertical_cell_coords(self.br.min_y, self.br.max_y)
+        vx, vy, vz = np.meshgrid(x_cell_coords, y_cell_coords, self.z_cell_coords, indexing='ij')
         vertex = np.array([vx, vy, vz])
         vertex = np.moveaxis(vertex, 0, -1)
-
         return vertex
