@@ -47,8 +47,8 @@ class Cylinder():
     def who_is_in(self, center_locations):
         # TODO: can be improved by symmetry
         ni, nj, _ = center_locations.shape
-        isin = np.zeros((ni, ni), dtype=bool)
-        for i, j in product(range(ni), range(ni)):
+        isin = np.zeros((ni, nj), dtype=bool)
+        for i, j in product(range(ni), range(nj)):
             [cx, cy] = center_locations[i, j]
             dist = (cx ** 2. + cy ** 2.) ** .5
             isin[i, j] = self.radius >= dist
