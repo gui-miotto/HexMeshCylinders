@@ -5,14 +5,14 @@ from HexMeshCylinders import Stack
 from HexMeshCylinders.Shapes import Circle
 
 
-class TestCubeMesh(unittest.TestCase):
+class TestMeshOfCubes(unittest.TestCase):
     """
     Creates a mesh made just of cubes by using n_layers=None
     """
 
     @classmethod
     def setUpClass(cls):
-        super(TestCubeMesh, cls).setUpClass()
+        super(TestMeshOfCubes, cls).setUpClass()
 
         this_dir = os.path.dirname(os.path.abspath( __file__ ))
         case_dir = os.path.join(this_dir, 'dummy_case')
@@ -44,7 +44,7 @@ class TestCubeMesh(unittest.TestCase):
         print(cls.checkMesh_output)
 
     def setUp(self):
-        self.checkMesh_output = TestCubeMesh.checkMesh_output
+        self.checkMesh_output = TestMeshOfCubes.checkMesh_output
 
     def test_just_cubes(self):
         match = re.search(r'hexahedra:[ ]*[0-9]*', self.checkMesh_output)
