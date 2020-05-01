@@ -28,6 +28,4 @@ stack.name_patches([
     PatchSpec(name='top', type='patch', top_patch=stack.n_patches - 1)
 ])
 
-
-
 stack.export('/tmp/HexMeshCylinders/hourglass')

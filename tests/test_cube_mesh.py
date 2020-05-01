@@ -1,7 +1,7 @@
 import math, os, re, subprocess, unittest
 import numpy as np
 
-from HexMeshCylinders import Cylinder, Stack
+from HexMeshCylinders import Stack
 
 
 class TestCubeMesh(unittest.TestCase):

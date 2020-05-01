@@ -1,7 +1,8 @@
 import math, os, re, subprocess, unittest
 import numpy as np
 
-from HexMeshCylinders import Cylinder, Stack
+from HexMeshCylinders import Stack
+from HexMeshCylinders.Shapes import Circle
 
 
 class TestCheckMesh(unittest.TestCase):
@@ -16,9 +17,9 @@ class TestCheckMesh(unittest.TestCase):
 
         # Randomly create the specs for some cylinders
         n_cyls = 5
-        rand = np.random.RandomState(0)
-        diams = rand.uniform(low=2., high=10., size=n_cyls)
-        heights = rand.uniform(low=2., high=10., size=n_cyls)
+        diams = [6.40638322, 7.66518258, 4.32723791, 6.08662084, 9.14357563]
+        heights = [4.68887927, 2.37675593, 2.62172863, 2.15440161, 3.32242953]
+        n_layers = [7, 3, 5, 4, 5]
 
         # Analytically calculate the volume of this stack
         vol = 0.
@@ -26,19 +27,17 @@ class TestCheckMesh(unittest.TestCase):
             vol += heights[n] * math.pi * (diams[n] / 2.) ** 2.
         cls.analytical_volume = vol
 
-        # Creat stack specification
-        Cylinder.cell_edge = .5
-        n_layers = rand.randint(low=1, high=4, size=n_cyls)
-
-        cylinders = list()
+        # Create stack specification
+        stack = Stack(cell_edge=.2)
         for n in range(n_cyls):
-            d = Cylinder.conv_diam(diams[n])
-            h = heights[n]
-            l = n_layers[n]
-            cylinders.append(Cylinder(diameter=d, height=h, n_layers=l))
+            stack.add_solid(
+                shape2d=Circle(diameter=diams[n]),
+                height=heights[n],
+                n_layers=n_layers[n],
+            )
 
         # Create mesh and export it
-        stack = Stack(cylinders, verbose=False)
+        stack.build_mesh()
         stack.export(mesh_dir)
 
         # Run checkMesh and store its output
@@ -65,46 +64,58 @@ class TestCheckMesh(unittest.TestCase):
         rel_error = abs(self.analytical_volume - mesh_vol) / self.analytical_volume
         self.assertLess(rel_error, 0.01)  # 1% tolerance
 
-    def test_only_hexahedra(self):
-        match = re.search(r'hexahedra:[ ]*[0-9]*', self.checkMesh_output)
-        hexa_num = int(match.group(0).split(' ')[-1])
-
-        # Number of hexahedrals should be greater than zero
-        self.assertGreater(hexa_num, 0)
-
-        # Number of any other shape should be zero
-        other_shapes = ['prisms', 'wedges', 'pyramids', 'tet wedges',
-                        'tetrahedra', 'polyhedra']
-        for shape in other_shapes:
-            match = re.search(shape + ':[ ]*[0-9]*', self.checkMesh_output)
-            shape_num = int(match.group(0).split(' ')[-1])
-            self.assertEqual(shape_num, 0, msg=shape)
-
-    def test_one_line_checks(self):
+    def test_oks(self):
+        lines = self.checkMesh_output.splitlines()
         checks = [
+            'Boundary definition',
+            'Point usage',
+            'Upper triangular ordering',
+            'Face vertices',
+            'Topological cell zip-up check',
+            'Face-face connectivity',
+            'Boundary openness',
+            'Max cell openness',
+            'Minimum face area = '
+            'Min volume = ',
+            'Non-orthogonality check',
+            'Face pyramids',
+            'Max skewness',
+            'Coupled point location match',
+            'Face tets',
+            'Min/max edge length',
+            'All angles in faces',
+            'All face flatness',
+            'Cell determinant check',
+            'Concave cell check',
+            'Face interpolation weight check',
+            'Face volume ratio check',
+        ]
+
+        for line in lines:
+            for check in checks:
+                if line.startswith(check):
+                    self.assertTrue(
+                        line.endswith(' OK.'),
+                        msg=f'Failed at "{check}"')
+                    break
+
+    def test_other_one_liners(self):
+        checks = [
+            'hexahedra:     22212',
+            'prisms:        0',
+            'wedges:        0',
+            'pyramids:      0',
+            'tet wedges:    0',
+            'tetrahedra:    0',
+            'polyhedra:     0',
+            'points:           26389',
+            'faces:            70664',
+            'internal faces:   62608',
+            'cells:            22212',
             'faces per cell:   6',
             'boundary patches: 11',
-            'Boundary definition OK.',
-            'Point usage OK.',
-            'Upper triangular ordering OK.',
-            'Face vertices OK.',
-            'Topological cell zip-up check OK.',
-            'Face-face connectivity OK.',
             'Number of regions: 1 (OK).',
-            'Max cell openness = 0 OK.',
-            'Face area magnitudes OK.',
-            'Cell volumes OK.',
-            'Non-orthogonality check OK.',
-            'Face pyramids OK.',
-            'Coupled point location match (average 0) OK.',
-            'Face tets OK.',
-            'All angles in faces OK.',
-            'All face flatness OK.',
-            'Cell determinant check OK.',
-            'Concave cell check OK.',
-            'Face interpolation weight check OK.',
-            'Face volume ratio check OK.',
-            'Mesh OK.',
+            'Mesh OK.'
         ]
 
         for check in checks:
