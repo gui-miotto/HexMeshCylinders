@@ -7,7 +7,13 @@ from .shape2D import Shape2D, BoundingRectangle
 
 class Rectangle(Shape2D):
 
-    def __init__(self, len_x: float, len_y: float):
+    def __init__(self, len_x: float, len_y: float=None):
+        if len_y is None:
+            len_y = len_x
+
+        if len_x <= 0 or len_y <= 0:
+            raise ValueError('len_x and len_y must be a positive numbers')
+
         self.len_x = len_x
         self.len_y = len_y
 

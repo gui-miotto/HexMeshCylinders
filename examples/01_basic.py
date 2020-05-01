@@ -1,14 +1,26 @@
-from HexMeshCylinders import Cylinder, Stack
+from HexMeshCylinders import Stack
+from HexMeshCylinders.Shapes import Rectangle, Circle
 
+# All cells in this mesh will have x and y edges of 2cm.
+stack = Stack(cell_edge=.02, verbose=True)
 
-# Cylinder.cell_edge defines the x and y dimensions for all the cells in the mesh
-Cylinder.cell_edge = 1E-3  # 1 milimeter
+# The bottom most solid is a rectangle with height 50cm. This height will be slipt into
+# 10 layers. So cells in this solid will have z edges of 5 cm
+stack.add_solid(
+    shape2d=Rectangle(len_x=1., len_y=.3),
+    height=.5,
+    n_layers=10,
+)
 
-# The volume will be made of two cylinders,
-cylinders = [
-    Cylinder(diameter=51, height=100E-3, n_layers=100),  # this one with 51 cells on its diameter,
-    Cylinder(diameter=21, height= 50E-3, n_layers= 20),  # and this one with a diameter of 21 cells.
-]
+# On top of the rectangle, we add a circle with height 6 cm.
+# Because n_layers was not specified, it will be calculated in such a way that the z edges are
+# as close as possible to the x and y edges. In other words, cells of this solid will be as similar
+# as possible to cubes.
+stack.add_solid(
+    shape2d=Circle(diameter=.6),
+    height=3.,
+)
 
-stack = Stack(cylinders, verbose=True)
-stack.export('/tmp/HexMeshCylinders/basic')
+# Creates and exports the mesh
+stack.build_mesh()
+stack.export('tests/dummy_case/constant/polyMesh/')

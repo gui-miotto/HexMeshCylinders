@@ -7,13 +7,15 @@ from .shape2D import Shape2D, BoundingRectangle
 
 class Ellipse(Shape2D):
 
-    def __init__(self, width: float, height: float):
+    def __init__(self, len_x: float, len_y: float=None):
+        if len_y is None:
+            len_y = len_x
 
-        if width <= 0 or height <= 0:
-            raise ValueError('width and height must be a positive numbers')
+        if len_x <= 0 or len_y <= 0:
+            raise ValueError('len_x and len_y must be a positive numbers')
 
-        self.a = width / 2.
-        self.b = height / 2.
+        self.a = len_x / 2.
+        self.b = len_y / 2.
 
     @property
     def bounding_rectangle(self):

@@ -15,16 +15,15 @@ from .printer import Printer
 
 
 class Stack():
-    def __init__(self, cell_edge, verbose=False):
-        """Specifies a volume that is made of a stack of cylinders
+    def __init__(self, cell_edge: float, verbose: bool=False):
+        """Specifies a volume that is made of a stack of solids
 
         Parameters
         ----------
-        cylinders : List[Cylinder]
-            A list of cylinders to stack. cylinders[0] is the bottom most cylinder, and
-             cylinders[-1] is the top most
+        cell_edge : float
+            Used as x and y dimensions for all cells of the mesh.
         verbose : bool, optional
-            Print runtimet messages, by default False
+            If True, outputs information about the progress of mesh construction, by default False.
         """
 
         self.edge = cell_edge

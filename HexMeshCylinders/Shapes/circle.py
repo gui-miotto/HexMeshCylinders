@@ -8,24 +8,6 @@ from .shape2D import Shape2D, BoundingRectangle
 class Circle(Shape2D):
 
     def __init__(self, diameter: float):
-        """ Specifies a cylinder to be used to create the final volume (a stack of cylinders).
-
-        Parameters
-        ----------
-        diameter : int
-            Diameter of cylinder specified in cell edeges. Basically it tells how many
-             cells will fit inside the cylinder diameter. This number must be odd
-             because the axis of the cylinder contains the center of the central cell
-             of each layer.
-        height : float
-            Height of the cylinder in meters.
-        n_layers : int
-            Into how many layers will the cylinder be divided. All layers will have equal
-             layer_height of size height/n_layers meters. If n_layers=None, then n_layers
-             will be equal to round(height/Cylinder.cell_edge), i.e. layer_height will be
-             aproximatelly Cylinder.cell_edge.
-        """
-
         if diameter <= 0:
             raise ValueError('diameter must be a positive number')
 
