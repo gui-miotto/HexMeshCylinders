@@ -1,4 +1,3 @@
-import math
 from itertools import product
 import numpy as np
 
@@ -7,7 +6,7 @@ from .shape2D import Shape2D, BoundingRectangle
 
 class Ellipse(Shape2D):
 
-    def __init__(self, len_x: float, len_y: float=None):
+    def __init__(self, len_x: float, len_y: float = None):
         if len_y is None:
             len_y = len_x
 
@@ -34,7 +33,6 @@ class Ellipse(Shape2D):
         isin = np.zeros((ni, nj), dtype=bool)
         for i, j in product(range(ni), range(nj)):
             [cx, cy] = center_locations[i, j]
-            dist = cx ** 2. / a2  + cy ** 2. / b2
+            dist = cx ** 2. / a2 + cy ** 2. / b2
             isin[i, j] = 1. >= dist
         return isin
-

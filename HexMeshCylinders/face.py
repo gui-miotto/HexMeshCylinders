@@ -132,7 +132,6 @@ class FaceList():
             self._get_boundary_vertical(layers)
             self._get_boundary_horizontal(l1)
 
-
     def _get_boundary_horizontal(self, layer):
         startFace = len(self._facelist)
         nFaces = 0
@@ -144,7 +143,7 @@ class FaceList():
                 if k == nz or not self.isin[i, j, k]:
                     cell_add = (i, j, k - 1)
                     face = self.celllist.get_cell_face(cell_add, 'up')
-                    if face.neighbour != None:
+                    if face.neighbour is not None:
                         print('treta')
                     self._facelist.append(face)
                     nFaces += 1
@@ -152,7 +151,7 @@ class FaceList():
                 if k == 0 or not self.isin[i, j, k - 1]:
                     cell_add = (i, j, k)
                     face = self.celllist.get_cell_face(cell_add, 'down')
-                    if face.neighbour != None:
+                    if face.neighbour is not None:
                         print('treta')
                     self._facelist.append(face)
                     nFaces += 1

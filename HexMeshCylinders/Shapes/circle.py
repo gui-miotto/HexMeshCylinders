@@ -1,4 +1,3 @@
-import math
 from itertools import product
 import numpy as np
 
@@ -31,4 +30,3 @@ class Circle(Shape2D):
             dist = (cx ** 2. + cy ** 2.) ** .5
             isin[i, j] = self.radius >= dist
         return isin
-

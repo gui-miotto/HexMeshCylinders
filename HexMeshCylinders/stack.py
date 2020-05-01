@@ -15,7 +15,7 @@ from .printer import Printer
 
 
 class Stack():
-    def __init__(self, cell_edge: float, verbose: bool=False):
+    def __init__(self, cell_edge: float, verbose: bool = False):
         """Specifies a volume that is made of a stack of solids
 
         Parameters
@@ -35,8 +35,7 @@ class Stack():
         self.shapes = []
         self.n_layers = []
 
-
-    def add_solid(self, shape2d: Shape2D, height: float, n_layers=None):
+    def add_solid(self, shape2d: Shape2D, height: float, n_layers: int = None):
         if n_layers is not None and not np.issubdtype(type(n_layers), np.integer):
             raise TypeError('n_layers must be an integer or None')
         if n_layers is None:
@@ -60,7 +59,6 @@ class Stack():
             max_y=max(self.br.max_y, sbr.max_y),
         )
 
-
     def build_mesh(self):
         self._print("Generating list of active cells")
         self.isin = self._who_is_in()
@@ -72,8 +70,13 @@ class Stack():
         self.celllist = CellList(self.isin, self.pointlist)
         self._print(f"Number of active cells{len(self.celllist)} of {self.isin.flatten().shape[0]}")
         self._print("Generating list of faces")
-        self.facelist = FaceList(self.isin, self.pointlist, self.celllist, self.n_layers, self.verbose)
-
+        self.facelist = FaceList(
+            isin=self.isin,
+            pointlist=self.pointlist,
+            celllist=self.celllist,
+            n_layers=self.n_layers,
+            verbose=self.verbose,
+            )
 
     @property
     def n_patches(self):

@@ -1,7 +1,8 @@
 from collections import namedtuple
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 BoundingRectangle = namedtuple('BoundingRectangle', ['min_x', 'max_x', 'min_y', 'max_y'])
+
 
 class Shape2D():
 

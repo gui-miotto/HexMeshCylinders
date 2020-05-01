@@ -2,16 +2,18 @@ import math
 import numpy as np
 
 from HexMeshCylinders import Stack, PatchSpec
-from HexMeshCylinders.Shapes import Rectangle, Circle
+from HexMeshCylinders.Shapes import Circle
+
+
+# Get the diameter of the hourglass as a function of the z-coordinate
+def hour_glass_diam(z):
+    return 2E-2 * (.2 + math.atan(z * 100) ** 2.)
 
 
 edge = 1E-3  # 1 milimeter
+layer_height = 2. * edge
 stack = Stack(cell_edge=edge, verbose=True)
 
-# Get the diameter of the hourglass as a function of the z-coordinate
-hour_glass_diam = lambda z : 2E-2 * (.2 + math.atan(z * 100) ** 2.)
-
-layer_height = 2. * edge
 for z in np.arange(-4E-2, 4E-2, layer_height):
     stack.add_solid(
         shape2d=Circle(diameter=hour_glass_diam(z)),

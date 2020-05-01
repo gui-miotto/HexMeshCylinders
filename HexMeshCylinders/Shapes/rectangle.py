@@ -7,7 +7,7 @@ from .shape2D import Shape2D, BoundingRectangle
 
 class Rectangle(Shape2D):
 
-    def __init__(self, len_x: float, len_y: float=None):
+    def __init__(self, len_x: float, len_y: float = None):
         if len_y is None:
             len_y = len_x
 
@@ -33,8 +33,5 @@ class Rectangle(Shape2D):
         br = self.bounding_rectangle
         for i, j in product(range(ni), range(nj)):
             [cx, cy] = cell_centers[i, j]
-            isin[i, j] = cx >= br.min_x and \
-                         cx <= br.max_x and \
-                         cy >= br.min_y and \
-                         cy <= br.max_y
+            isin[i, j] = cx >= br.min_x and cx <= br.max_x and cy >= br.min_y and cy <= br.max_y
         return isin

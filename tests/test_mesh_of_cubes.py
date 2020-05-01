@@ -1,5 +1,7 @@
-import math, os, re, subprocess, unittest
-import numpy as np
+import unittest
+import os
+import re
+import subprocess
 
 from HexMeshCylinders import Stack
 from HexMeshCylinders.Shapes import Circle
@@ -14,7 +16,7 @@ class TestMeshOfCubes(unittest.TestCase):
     def setUpClass(cls):
         super(TestMeshOfCubes, cls).setUpClass()
 
-        this_dir = os.path.dirname(os.path.abspath( __file__ ))
+        this_dir = os.path.dirname(os.path.abspath(__file__))
         case_dir = os.path.join(this_dir, 'dummy_case')
         mesh_dir = os.path.join(case_dir, 'constant', 'polyMesh')
 
