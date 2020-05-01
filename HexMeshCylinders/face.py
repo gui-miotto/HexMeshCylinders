@@ -17,11 +17,11 @@ class Face():
 
 
 class FaceList():
-    def __init__(self, isin, pointlist, celllist, cylinders, verbose):
+    def __init__(self, isin, pointlist, celllist, n_layers, verbose):
         self.isin = isin
         self.pointlist = pointlist
         self.celllist = celllist
-        self.cylinders = cylinders
+        self.n_layers = n_layers
         self._print = Printer(verbose)
 
         self._facelist = []
@@ -118,49 +118,50 @@ class FaceList():
     def _get_boundary_faces(self):
         # bottom most boundary
         self._print("Generating bottom most boundary")
-        self._get_boundary_horizontal(0, 'down')
+        self._get_boundary_horizontal(0)
 
         # intermediate boundaries
-        n_cyls = len(self.cylinders)
+        n_solids = len(self.n_layers)
         l0 = 0
-        for cyl in range(n_cyls):
-            self._print(f"Generating boundaries for cylinder {cyl+1} of {n_cyls}")
-            l1 = l0 + self.cylinders[cyl].n_layers
+
+        for solid_id, nl in enumerate(self.n_layers):
+            self._print(f"Generating boundaries for solid {solid_id+1} of {n_solids}")
+            l1 = l0 + nl
             layers = list(range(l0, l1))
-            self._get_boundary_vertical(layers)
             l0 = l1
+            self._get_boundary_vertical(layers)
+            self._get_boundary_horizontal(l1)
 
-            if cyl < n_cyls - 1:
-                if self.cylinders[cyl].diameter > self.cylinders[cyl + 1].diameter:
-                    self._get_boundary_horizontal(l1 - 1, 'up')
-                else:
-                    self._get_boundary_horizontal(l1, 'down')
-
-        # top most boundary
-        self._print("Generating top most boundary")
-        self._get_boundary_horizontal(l1 - 1, 'up')
-
-    def _get_boundary_horizontal(self, layer, direction):
-        assert direction in ['up', 'down']
+    def _get_boundary_horizontal(self, layer):
         startFace = len(self._facelist)
         nFaces = 0
         nx, ny, nz = self.isin.shape
         k = layer
+
         for i, j in product(range(nx), range(ny)):
-            if self.isin[i, j, k]:
-                cell_add = (i, j, k)
-                # For each of the four directions, check if cell is at the edge
-                # of the grid or if it has no neighbour
-                if direction == 'up' and (k == nz - 1 or not self.isin[i, j, k + 1]):
+            if k > 0 and self.isin[i, j, k - 1]:
+                if k == nz or not self.isin[i, j, k]:
+                    cell_add = (i, j, k - 1)
                     face = self.celllist.get_cell_face(cell_add, 'up')
+                    if face.neighbour is not None:
+                        print('treta')
                     self._facelist.append(face)
                     nFaces += 1
-                if direction == 'down' and (k == 0 or not self.isin[i, j, k - 1]):
+            if k < nz and self.isin[i, j, k]:
+                if k == 0 or not self.isin[i, j, k - 1]:
+                    cell_add = (i, j, k)
                     face = self.celllist.get_cell_face(cell_add, 'down')
+                    if face.neighbour is not None:
+                        print('treta')
                     self._facelist.append(face)
                     nFaces += 1
-        newPatch = Patch(name='patch_' + str(len(self.patches)), type='patch',
-                         startFace=startFace, nFaces=nFaces)
+
+        newPatch = Patch(
+            name='patch_' + str(len(self.patches)),
+            type='patch',
+            startFace=startFace,
+            nFaces=nFaces,
+            )
         self.patches.append(newPatch)
 
     def _get_boundary_vertical(self, layers):

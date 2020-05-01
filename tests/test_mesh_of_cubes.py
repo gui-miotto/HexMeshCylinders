@@ -1,32 +1,37 @@
-import math, os, re, subprocess, unittest
-import numpy as np
+import unittest
+import os
+import re
+import subprocess
 
-from HexMeshCylinders import Cylinder, Stack
+from HexMeshCylinders import Stack
+from HexMeshCylinders.Shapes import Circle
 
 
-class TestCubeMesh(unittest.TestCase):
+class TestMeshOfCubes(unittest.TestCase):
     """
     Creates a mesh made just of cubes by using n_layers=None
     """
 
     @classmethod
     def setUpClass(cls):
-        super(TestCubeMesh, cls).setUpClass()
+        super(TestMeshOfCubes, cls).setUpClass()
 
-        this_dir = os.path.dirname(os.path.abspath( __file__ ))
+        this_dir = os.path.dirname(os.path.abspath(__file__))
         case_dir = os.path.join(this_dir, 'dummy_case')
         mesh_dir = os.path.join(case_dir, 'constant', 'polyMesh')
 
         # Create stack specification
-        Cylinder.cell_edge = .5
         diams = [6., 4., 10.]
         heights = [10., 2., 6.]
-        cylinders = list()
+        stack = Stack(cell_edge=.5)
         for d, h in zip(diams, heights):
-            cylinders.append(Cylinder(diameter=Cylinder.conv_diam(d), height=h))
+            stack.add_solid(
+                shape2d=Circle(diameter=d),
+                height=h,
+            )
 
         # Create mesh and export it
-        stack = Stack(cylinders, verbose=False)
+        stack.build_mesh()
         stack.export(mesh_dir)
 
         # Run checkMesh and store its output
@@ -41,7 +46,7 @@ class TestCubeMesh(unittest.TestCase):
         print(cls.checkMesh_output)
 
     def setUp(self):
-        self.checkMesh_output = TestCubeMesh.checkMesh_output
+        self.checkMesh_output = TestMeshOfCubes.checkMesh_output
 
     def test_just_cubes(self):
         match = re.search(r'hexahedra:[ ]*[0-9]*', self.checkMesh_output)
@@ -66,7 +71,7 @@ class TestCubeMesh(unittest.TestCase):
         self.assertEqual(min_volume, max_volume)
 
         # Assert total volume = number of cells * volume of one cell
-        match = re.search(r'Total volume = [0-9]+\.[0-9]+', self.checkMesh_output)
+        match = re.search(r'Total volume = [0-9]+\.[0-9]*', self.checkMesh_output)
         total_volume = float(match.group(0).split(' ')[-1])
         self.assertEqual(hexa_num * min_volume, total_volume)
 

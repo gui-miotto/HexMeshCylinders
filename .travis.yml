@@ -24,4 +24,4 @@ install:
 
 script:
   - pytest
-  - flake8 --max-line-length=100 --show-source HexMeshCylinders
+  - flake8 --max-line-length=100 --show-source HexMeshCylinders examples tests
