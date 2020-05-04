@@ -5,10 +5,7 @@ import os
 from .internal_face_list import InternalFaceList
 from .boundary_list import BoundaryList
 from .printer import Printer
-from .headers import faces_header, owner_header, neighbour_header, boundary_header
-
-
-PatchSpec = namedtuple('PatchSpec', ['name', 'type', 'top_patch'])
+from .headers import faces_header, owner_header, neighbour_header
 
 
 class FaceList():
@@ -19,6 +16,10 @@ class FaceList():
         self._print = Printer(verbose)
 
         self._build_list()
+
+    @property
+    def n_boundaries(self):
+        return len(self.boundary_list)
 
     def export(self, polyMesh_path):
         self._print("Exporting faces, owner and neighbour")

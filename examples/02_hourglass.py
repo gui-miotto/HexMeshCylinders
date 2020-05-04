@@ -1,7 +1,7 @@
 import math
 import numpy as np
 
-from HexMeshCylinders import Stack, PatchSpec
+from HexMeshCylinders import Stack
 from HexMeshCylinders.Shapes import Circle
 
 
@@ -24,10 +24,13 @@ for z in np.arange(-4E-2, 4E-2, layer_height):
 stack.build_mesh()
 
 # Patches can be grouped, be renamed and have their types altered
-stack.name_patches([
-    PatchSpec(name='bottom', type='wall', top_patch=0),
-    PatchSpec(name='glass', type='wall', top_patch=stack.n_patches - 2),
-    PatchSpec(name='top', type='patch', top_patch=stack.n_patches - 1)
-])
+be = stack.get_boundary_editor()
+be.edit_boundary(index=0, new_name='bottom', new_btype='wall')
+be.edit_boundary(index=stack.n_patches - 1, new_name='top', new_btype='patch')
+be.merge_boundaries(
+    indices=list(range(1, stack.n_patches - 1)),
+    name='glass',
+    b_type='wall',
+)
 
 stack.export('/tmp/HexMeshCylinders/hourglass')

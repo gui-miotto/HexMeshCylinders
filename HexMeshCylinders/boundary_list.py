@@ -1,5 +1,6 @@
 from itertools import product, chain
 from collections import namedtuple
+from typing import List
 import os
 
 from .boundary import Boundary
@@ -21,11 +22,17 @@ class BoundaryList():
     def __len__(self):
         return len(self.boundaries)
 
+    def append(self, boundary: Boundary):
+        self.boundaries.append(boundary)
+
+    def remove(self, indices: List[int]):
+        tmp_list = [i for j, i in enumerate(self.boundaries) if j not in indices]
+        self.boundaries = tmp_list
+
     @property
     def faces(self):
         """ A list with all faces of all boundaries """
         return [face for face in chain.from_iterable(self.boundaries)]
-
 
     def export(self, startFace: int, polyMesh_path: str):
         self._print("Exporting boundary")
@@ -114,4 +121,12 @@ class BoundaryList():
             faces=faces,
         )
         self.boundaries.append(new_bound)
+
+
+
+
+
+
+
+
 
