@@ -7,10 +7,10 @@ from .headers import point_header
 
 class PointList():
     def __init__(self, isin, vertex):
-        self.isin = isin
-        self.vertex = vertex
-        self._pointlist = self._build_list()  # list of vertex addresses (not space locations)
-        self._pointarray = self._build_array()
+        self.isin = isin  # shape=(i, j, k, 3)
+        self.vertex = vertex  # Array with the space location of each vertex, shape=(i+1, j+1, k+1, 3)
+        self._pointlist = self._build_list()  # linear list of grid addresses (not space locations) of the active cells
+        self._pointarray = self._build_array() # gives the index of the vertex, give its grid address, shape=(i+1, j+1, k+1)
 
     def _build_list(self):
         points = set()

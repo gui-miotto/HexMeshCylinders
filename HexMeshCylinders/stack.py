@@ -75,7 +75,7 @@ class Stack():
             )
 
     def get_boundary_editor(self):
-        return BoundaryEditor(bound_list=self.facelist.boundary_list)
+        return BoundaryEditor(bound_list=self.facelist.boundary_list, point_list=self.pointlist)
 
     def export(self, filepath):
         Path(filepath).mkdir(parents=True, exist_ok=True)
