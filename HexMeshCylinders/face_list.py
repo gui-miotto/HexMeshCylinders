@@ -1,5 +1,3 @@
-from itertools import product
-from collections import namedtuple
 import os
 
 from .internal_face_list import InternalFaceList
@@ -68,6 +66,3 @@ class FaceList():
         self.internal_faces.build_list()
         self._print("Generating list of boundary faces")
         self.boundary_list.build_list()
-
-
-

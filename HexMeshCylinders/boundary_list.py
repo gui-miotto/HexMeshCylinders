@@ -1,11 +1,11 @@
 from itertools import product, chain
-from collections import namedtuple
 from typing import List
 import os
 
 from .boundary import Boundary
 from .printer import Printer
 from .headers import boundary_header
+
 
 class BoundaryList():
     def __init__(self, isin, celllist, n_layers, verbose):
@@ -121,12 +121,3 @@ class BoundaryList():
             faces=faces,
         )
         self.boundaries.append(new_bound)
-
-
-
-
-
-
-
-
-

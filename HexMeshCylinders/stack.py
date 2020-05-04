@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List
 import math
 
 import numpy as np
@@ -85,7 +84,6 @@ class Stack():
         self._print("Exporting face list")
         self.facelist.export(filepath)
         self._print("Done exporting")
-
 
     @property
     def n_patches(self):

@@ -1,11 +1,12 @@
 from itertools import product
+from typing import List
 
+from .cell_list import CellList
 from .printer import Printer
 
 
 class InternalFaceList():
-    #TODO: type it
-    def __init__(self, isin, celllist, n_layers, verbose):
+    def __init__(self, isin, celllist: CellList, n_layers: List[int], verbose: bool):
         self.isin = isin
         self.celllist = celllist
         self._print = Printer(verbose)
