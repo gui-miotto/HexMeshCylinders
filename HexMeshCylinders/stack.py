@@ -2,15 +2,12 @@ from pathlib import Path
 from typing import List
 import math
 
-
 import numpy as np
 
 from .Shapes.shape2D import Shape2D, BoundingRectangle
-
-
-from .point import PointList
-from .cell import CellList
-from .face import FaceList, Patch, PatchSpec
+from .point_list import PointList
+from .cell_list import CellList
+from .face_list import FaceList, PatchSpec
 from .printer import Printer
 
 
@@ -72,7 +69,6 @@ class Stack():
         self._print("Generating list of faces")
         self.facelist = FaceList(
             isin=self.isin,
-            pointlist=self.pointlist,
             celllist=self.celllist,
             n_layers=self.n_layers,
             verbose=self.verbose,
