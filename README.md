@@ -25,19 +25,24 @@ The following example generates the mesh shown in the image bellow. For more dem
 
 
 ```python
-from HexMeshCylinders import Cylinder, Stack
+from HexMeshCylinders import Stack
+from HexMeshCylinders.Shapes import Rectangle, Circle
 
-# Cylinder.cell_edge defines the x and y dimensions for all the cells in the mesh
-Cylinder.cell_edge = 1E-3  # 1 milimeter
+stack = Stack(cell_edge=.015, verbose=True)
 
-# The volume will be made of two cylinders,
-cylinders = [
-    Cylinder(diameter=51, height=100E-3, n_layers=100),  # this one with 51 cells on its diameter,
-    Cylinder(diameter=21, height= 50E-3, n_layers= 20),  # and this one with a diameter of 21 cells.
-]
+stack.add_solid(
+    shape2d=Rectangle(len_x=.8, len_y=1.2),
+    height=1.,
+    n_layers=20,
+)
+stack.add_solid(
+    shape2d=Circle(diameter=.6),
+    height=.8,
+)
 
-stack = Stack(cylinders, verbose=True)
+stack.build_mesh()
 stack.export('/tmp/HexMeshCylinders/basic')
+
 ```
 
 <p align="center">

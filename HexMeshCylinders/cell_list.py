@@ -61,16 +61,26 @@ class CellList():
         else:
             raise ValueError('Invalid direction')
 
+        orientation = "horizontal" if direction in ['up', 'down'] else "vertical"
+
         cell_to = tuple(cell_to)
         if self._is_cell_address_out_of_bounds(cell_to) or not self.isin[cell_to]:
             # This means we the face is a boundary
-            return Face(vertex, owner=cell_from_index)
+            return Face(vertex=vertex, owner=cell_from_index, orientation=orientation)
         else:
             cell_to_index = self.index(cell_to)
             if cell_to_index > cell_from_index:
-                return Face(vertex, owner=cell_from_index, neighbour=cell_to_index)
+                return Face(vertex=vertex,
+                            owner=cell_from_index,
+                            neighbour=cell_to_index,
+                            orientation=orientation
+                            )
             else:  # By the way this program was constructed, we probably will never hit this else
-                return Face(vertex[::-1], owner=cell_to_index, neighbour=cell_from_index)
+                return Face(vertex=vertex[::-1],
+                            owner=cell_to_index,
+                            neighbour=cell_from_index,
+                            orientation=orientation,
+                            )
 
     def _is_cell_address_out_of_bounds(self, address):
         for ind, add_coord in enumerate(address):

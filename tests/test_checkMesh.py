@@ -118,6 +118,7 @@ class TestCheckMesh(unittest.TestCase):
             'faces per cell:   6',
             'boundary patches: 11',
             'Number of regions: 1 (OK).',
+            'Overall domain bounding box (-4.6 -4.6 0) (4.6 4.6 15.1642)',  # Assert box symmetry!
             'Mesh OK.'
         ]
 
