@@ -32,7 +32,7 @@ class TestHexahedron(unittest.TestCase):
         # The total mesh volume should be exactly 195.
         stack.build_mesh()
 
-        # Edit boundaries. At the end, there should be 8 patches
+        # Edit boundaries. At the end, there should be 9 patches
         be = stack.get_boundary_editor()
         be.split_boundaries_coord(index=0, coord_name='y', coord_value=0.)
         be.split_boundaries_coord(index=0, coord_name='z', coord_value=2., new_names=('h1', 'h2'))
@@ -41,6 +41,11 @@ class TestHexahedron(unittest.TestCase):
             coord_name='x',
             coord_value=1.,
             new_types=('wall', 'patch'),
+            )
+        be.merge_boundaries(indices=[0, 1])
+        be.split_boundaries_pizza(
+            index=be.n_boundaries - 1,
+            angles=[.3, 1.7, 4.],
             )
 
         # Export mesh
@@ -73,22 +78,24 @@ class TestHexahedron(unittest.TestCase):
 
     def test_boundary_editor(self):
         checks = [
-            'boundary patches: 8',
-            'boundary_3          48       72       ok (non-closed singly connected)   '
-            '(-1.5 -1.5 3) (1.5 1.5 8)',
-            'boundary_4          36       49       ok (non-closed singly connected)   '
-            '(-1.5 -1.5 8) (1.5 1.5 8)',
-            'boundary_0_a        100      121      ok (non-closed singly connected)   '
+            'boundary patches: 9',
+            'boundary_3_0        18       27       ok (non-closed singly connected)   '
+            '(0 0 3) (1.5 1.5 8)',
+            'boundary_3_1        33       45       ok (non-closed singly connected)   '
+            '(-1.5 -1.5 3) (0 1.5 8)',
+            'boundary_3_2        33       46       ok (non-closed singly connected)   '
+            '(-1.5 -1.5 3) (1.5 0.5 8)',
+            'boundary_0_more     100      121      ok (non-closed singly connected)   '
             '(-2.5 0 0) (2.5 5 0)',
-            'boundary_0_b        100      121      ok (non-closed singly connected)   '
+            'boundary_0_less     100      121      ok (non-closed singly connected)   '
             '(-2.5 -5 0) (2.5 0 0)',
             'h1                  120      180      ok (non-closed singly connected)   '
             '(-2.5 -5 2) (2.5 5 3)',
             'h2                  240      300      ok (non-closed singly connected)   '
             '(-2.5 -5 0) (2.5 5 2)',
-            'boundary_2_a        54       79       ok (non-closed singly connected)   '
+            'boundary_2_more     54       79       ok (non-closed singly connected)   '
             '(1 -5 3) (2.5 5 3)',
-            'boundary_2_b        110      143      ok (non-closed singly connected)   '
+            'boundary_2_less     110      143      ok (non-closed singly connected)   '
             '(-2.5 -5 3) (1 5 3)',
             ]
 

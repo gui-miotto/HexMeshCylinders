@@ -23,4 +23,4 @@ stack.add_solid(
 
 # Creates and exports the mesh
 stack.build_mesh()
-stack.export('tests/dummy_case/constant/polyMesh/')
+stack.export('/tmp/HexMeshCylinders/basic')
