@@ -6,11 +6,25 @@ from .headers import point_header
 
 
 class PointList():
-    def __init__(self, isin, vertex):
-        self.isin = isin  # shape=(i, j, k, 3)
-        self.vertex = vertex  # Array with the space location of each vertex, shape=(i+1, j+1, k+1, 3)
-        self._pointlist = self._build_list()  # linear list of grid addresses (not space locations) of the active cells
-        self._pointarray = self._build_array() # gives the index of the vertex, give its grid address, shape=(i+1, j+1, k+1)
+    def __init__(self, isin: 'np.ndarray[bool]', vertex: 'np.ndarray[float]'):
+        """[summary]
+
+        Parameters
+        ----------
+        isin : np.ndarray[bool]
+            Indicates which cells are active. shape=(i, j, k)
+        vertex : np.ndarray[float]
+            Phisical coordinates (x, y, z) of each grid vertex (i, j, k). shape=(i+1, j+1, k+1, 3)
+        """
+        self.isin = isin
+        self.vertex = vertex
+
+        # _pointlist is a linear list (with n entries) of grid addresses (i, j, k).
+        # Not physical coordinates. shape=(n, 3).
+        self._pointlist = self._build_list()
+        # _pointarray  stores the index of inside _pointlist of each grid address.
+        # This array just exist for performance reasons. shape=(i+1, j+1, k+1)
+        self._pointarray = self._build_array()
 
     def _build_list(self):
         points = set()

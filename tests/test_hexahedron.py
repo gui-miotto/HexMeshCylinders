@@ -36,7 +36,12 @@ class TestHexahedron(unittest.TestCase):
         be = stack.get_boundary_editor()
         be.split_boundaries_coord(index=0, coord_name='y', coord_value=0.)
         be.split_boundaries_coord(index=0, coord_name='z', coord_value=2., new_names=('h1', 'h2'))
-        be.split_boundaries_coord(index=0, coord_name='x', coord_value=1., new_types=('wall', 'patch'))
+        be.split_boundaries_coord(
+            index=0,
+            coord_name='x',
+            coord_value=1.,
+            new_types=('wall', 'patch'),
+            )
 
         # Export mesh
         stack.export(mesh_dir)
