@@ -33,10 +33,14 @@ class Stack():
         self.n_layers = []
 
     def add_solid(self, shape2d: Shape2D, height: float, n_layers: int = None):
+        if height is None and n_layers is None:
+            raise ValueError('Either height or n_layers must be specified')
         if n_layers is not None and not np.issubdtype(type(n_layers), np.integer):
             raise TypeError('n_layers must be an integer or None')
         if n_layers is None:
             n_layers = int(round(height / self.edge))
+        if height is None:
+            height = self.edge * n_layers
 
         self.shapes.append(shape2d)
         self.n_layers.append(n_layers)
