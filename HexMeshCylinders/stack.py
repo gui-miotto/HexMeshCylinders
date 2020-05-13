@@ -1,5 +1,8 @@
 from pathlib import Path
 import math
+import os
+import subprocess
+import shutil
 
 import numpy as np
 
@@ -32,7 +35,7 @@ class Stack():
         self.shapes = []
         self.n_layers = []
 
-    def add_solid(self, shape2d: Shape2D, height: float, n_layers: int = None):
+    def add_solid(self, shape2d: Shape2D, height: float = None, n_layers: int = None):
         if height is None and n_layers is None:
             raise ValueError('Either height or n_layers must be specified')
         if n_layers is not None and not np.issubdtype(type(n_layers), np.integer):
@@ -81,13 +84,29 @@ class Stack():
     def get_boundary_editor(self):
         return BoundaryEditor(bound_list=self.facelist.boundary_list, point_list=self.pointlist)
 
-    def export(self, filepath):
-        Path(filepath).mkdir(parents=True, exist_ok=True)
+    def export(self, mesh_dir: str, run_renumberMesh: bool = False):
+
+        if os.path.exists(mesh_dir):
+           shutil.rmtree(mesh_dir)
+        Path(mesh_dir).mkdir(parents=True, exist_ok=False)
+
         self._print("Exporting point list")
-        self.pointlist.export(filepath)
+        self.pointlist.export(mesh_dir)
         self._print("Exporting face list")
-        self.facelist.export(filepath)
+        self.facelist.export(mesh_dir)
         self._print("Done exporting")
+
+        if run_renumberMesh:
+            case_dir = os.path.join(mesh_dir, '..', '..')
+            process = subprocess.Popen(
+                ['renumberMesh', '-overwrite', '-case', case_dir],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True)
+            stdout, stderr = process.communicate()
+            if process.poll() != 0:
+                print(stdout)
+                raise RuntimeError(stderr)
 
     @property
     def n_patches(self):
