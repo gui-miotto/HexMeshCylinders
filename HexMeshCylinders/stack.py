@@ -87,7 +87,7 @@ class Stack():
     def export(self, mesh_dir: str, run_renumberMesh: bool = False):
 
         if os.path.exists(mesh_dir):
-           shutil.rmtree(mesh_dir)
+            shutil.rmtree(mesh_dir)
         Path(mesh_dir).mkdir(parents=True, exist_ok=False)
 
         self._print("Exporting point list")
