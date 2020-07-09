@@ -11,11 +11,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="HexMeshCylinders",
-    version="0.0.2",
+    version="0.0.3",
     author="Gui Miotto",
     author_email="guilherme.miotto@gmail.com",
-    description="Creates structured hexahedral meshes for volumes with cylindrical "
-                "symmetry",
+    description="Creates structured hexahedral meshes for OpenFOAM",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gui-miotto/HexMeshCylinders",
