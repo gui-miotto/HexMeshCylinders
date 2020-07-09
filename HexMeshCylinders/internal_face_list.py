@@ -18,7 +18,7 @@ class InternalFaceList():
         n_cells = self.isin.size
         all_faces = []
         for n, (i, j, k) in enumerate(product(range(nx), range(ny), range(nz))):
-            if (n+1) % 1000 == 0:
+            if (n+1) % 10000 == 0:
                 prog = n / n_cells * 100.
                 self._print(f'Reached cell {n+1} of {n_cells} ({prog:.2f}%)')
             if self.isin[i, j, k]:

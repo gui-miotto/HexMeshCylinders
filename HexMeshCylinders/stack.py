@@ -97,9 +97,12 @@ class Stack():
         self._print("Done exporting")
 
         if run_renumberMesh:
+            self._print("Running renumberMesh")
             case_dir = os.path.join(mesh_dir, '..', '..')
+            os.chdir(case_dir)  # Had to add this chdir here, because running renumberMesh
+                                # with -case was causing problems while reading csv files
             process = subprocess.Popen(
-                ['renumberMesh', '-overwrite', '-case', case_dir],
+                ['renumberMesh', '-overwrite'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 universal_newlines=True)
@@ -107,6 +110,8 @@ class Stack():
             if process.poll() != 0:
                 print(stdout)
                 raise RuntimeError(stderr)
+            self._print(stdout)
+            self._print("renumberMesh has finished")
 
     @property
     def n_patches(self):

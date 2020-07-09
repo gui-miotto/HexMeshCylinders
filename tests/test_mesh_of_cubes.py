@@ -32,7 +32,7 @@ class TestMeshOfCubes(unittest.TestCase):
 
         # Create mesh and export it
         stack.build_mesh()
-        stack.export(mesh_dir)
+        stack.export(mesh_dir, run_renumberMesh=True)
 
         # Run checkMesh and store its output
         process = subprocess.Popen(

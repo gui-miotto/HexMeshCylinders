@@ -10,13 +10,13 @@ from .boundary_list import BoundaryList
 
 def atan(x, y, set_zero_to=None):
     if x == 0:
-        raise ZeroDivisionError("x shouldn't be zero")
-
-    angle = math.atan(y / x)
-    if x > 0:
-        angle = angle if y >= 0 else angle + 2 * math.pi
-    else:
-        angle += math.pi
+        angle = math.pi / 2. if y > 0 else 3. * math.pi / 2.
+    else :
+        angle = math.atan(y / x)
+        if x > 0:
+            angle = angle if y >= 0 else angle + 2 * math.pi
+        else:
+            angle += math.pi
 
     if set_zero_to is not None:
         angle -= set_zero_to
@@ -145,3 +145,54 @@ class BoundaryEditor():
                 b_type=new_types[i],
             )
             self.boundaries.append(new_bound)
+
+    def split_boundary_rings(self,
+                               index: int,
+                               radi: List[float],
+                               new_names: List[str] = None,
+                               new_types: List[str] = None,
+                               ):
+        # Input validation
+        n_radi = len(radi)
+        n_new_bounds = n_radi + 1
+        if n_radi < 1:
+            raise ValueError('At least one radius must be provided')
+        if new_names is not None and n_new_bounds != len(new_names):
+            raise ValueError(str(n_new_bounds) + 'names should be provided')
+        if new_types is not None and n_new_bounds != len(new_types):
+            raise ValueError(str(n_new_bounds) + 'b_types should be provided')
+
+        # Adjust names and types
+        bound = self.boundaries[index]
+        if new_names is None:
+            new_names = [bound.name + '_' + str(i) for i in range(n_new_bounds)]
+        if new_types is None:
+            new_types = [bound.b_type] * n_radi
+
+        # Split faces according to their angle value
+        radi = sorted(radi)
+        new_faces = [list() for _ in range(n_new_bounds)]
+        fcenters = self._get_face_centers(bound_index=index)
+
+        for face, center in zip(bound.faces, fcenters):
+            face_dist = math.sqrt(center[0] ** 2. + center[1] ** 2.)
+            face_allocated = False
+            for new_bound_id, ring_radius in enumerate(radi):
+                if ring_radius >= face_dist:
+                    new_faces[new_bound_id].append(face)
+                    face_allocated = True
+                    break
+            if not face_allocated:
+                new_faces[-1].append(face)
+
+        # Remove old large boundary and add the new smaller boundaries
+        self.boundaries.remove([index])
+        for i in range(n_new_bounds):
+            new_bound = Boundary(
+                name=new_names[i],
+                faces=new_faces[i],
+                b_type=new_types[i],
+            )
+            self.boundaries.append(new_bound)
+
+
