@@ -62,7 +62,7 @@ class BoundaryEditor():
             faces_center.append(np.mean(vertex_coords, axis=0))
         return faces_center
 
-    def split_boundaries_coord(self,
+    def split_boundary_coord(self,
                                index: int,
                                coord_name: str,
                                coord_value: float,
@@ -97,7 +97,7 @@ class BoundaryEditor():
             )
             self.boundaries.append(new_bound)
 
-    def split_boundaries_pizza(self,
+    def split_boundary_pizza(self,
                                index: int,
                                angles: List[float],
                                new_names: List[str] = None,

@@ -34,16 +34,16 @@ class TestHexahedron(unittest.TestCase):
 
         # Edit boundaries. At the end, there should be 9 patches
         be = stack.get_boundary_editor()
-        be.split_boundaries_coord(index=0, coord_name='y', coord_value=0.)
-        be.split_boundaries_coord(index=0, coord_name='z', coord_value=2., new_names=('h1', 'h2'))
-        be.split_boundaries_coord(
+        be.split_boundary_coord(index=0, coord_name='y', coord_value=0.)
+        be.split_boundary_coord(index=0, coord_name='z', coord_value=2., new_names=('h1', 'h2'))
+        be.split_boundary_coord(
             index=0,
             coord_name='x',
             coord_value=1.,
             new_types=('wall', 'patch'),
             )
         be.merge_boundaries(indices=[0, 1])
-        be.split_boundaries_pizza(
+        be.split_boundary_pizza(
             index=be.n_boundaries - 1,
             angles=[.3, 1.7, 4.],
             )
