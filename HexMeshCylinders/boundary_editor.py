@@ -11,7 +11,7 @@ from .boundary_list import BoundaryList
 def atan(x, y, set_zero_to=None):
     if x == 0:
         angle = math.pi / 2. if y > 0 else 3. * math.pi / 2.
-    else :
+    else:
         angle = math.atan(y / x)
         if x > 0:
             angle = angle if y >= 0 else angle + 2 * math.pi
@@ -63,12 +63,12 @@ class BoundaryEditor():
         return faces_center
 
     def split_boundary_coord(self,
-                               index: int,
-                               coord_name: str,
-                               coord_value: float,
-                               new_names: Tuple[str, str] = None,
-                               new_types: Tuple[str, str] = None,
-                               ):
+                             index: int,
+                             coord_name: str,
+                             coord_value: float,
+                             new_names: Tuple[str, str] = None,
+                             new_types: Tuple[str, str] = None,
+                             ):
         fcenters = self._get_face_centers(bound_index=index)
         bound = self.boundaries[index]
         sel_coord = ['x', 'y', 'z'].index(coord_name)
@@ -98,11 +98,11 @@ class BoundaryEditor():
             self.boundaries.append(new_bound)
 
     def split_boundary_pizza(self,
-                               index: int,
-                               angles: List[float],
-                               new_names: List[str] = None,
-                               new_types: List[str] = None,
-                               ):
+                             index: int,
+                             angles: List[float],
+                             new_names: List[str] = None,
+                             new_types: List[str] = None,
+                             ):
         # Input validation
         if min(angles) < 0 or max(angles) > 2. * math.pi:
             raise ValueError('Angles should be in the range from 0. to 2.*pi')
@@ -147,11 +147,11 @@ class BoundaryEditor():
             self.boundaries.append(new_bound)
 
     def split_boundary_rings(self,
-                               index: int,
-                               radi: List[float],
-                               new_names: List[str] = None,
-                               new_types: List[str] = None,
-                               ):
+                             index: int,
+                             radi: List[float],
+                             new_names: List[str] = None,
+                             new_types: List[str] = None,
+                             ):
         # Input validation
         n_radi = len(radi)
         n_new_bounds = n_radi + 1
@@ -194,5 +194,3 @@ class BoundaryEditor():
                 b_type=new_types[i],
             )
             self.boundaries.append(new_bound)
-
-

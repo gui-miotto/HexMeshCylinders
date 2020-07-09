@@ -99,8 +99,9 @@ class Stack():
         if run_renumberMesh:
             self._print("Running renumberMesh")
             case_dir = os.path.join(mesh_dir, '..', '..')
-            os.chdir(case_dir)  # Had to add this chdir here, because running renumberMesh
-                                # with -case was causing problems while reading csv files
+            # Had to add this chdir here, because running renumberMesh
+            # with -case was causing problems while reading csv files
+            os.chdir(case_dir)
             process = subprocess.Popen(
                 ['renumberMesh', '-overwrite'],
                 stdout=subprocess.PIPE,
