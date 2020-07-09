@@ -3,7 +3,7 @@
 </p>
 
 <!--# HexMeshCylinders-->
-> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url].  It is restricted to volumes with radial-rotational symmetry, i.e. solids that can be described as a "stack" of cylinders.
+> HexMeshCylinders generates hexagonal meshes for [OpenFOAM][openfoam-url]. It is very limited: it can only mesh volumes that can be described as a stack of basic geometric shapes.
 
 [![Build Status][travis-image]][travis-url]
 
